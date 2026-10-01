@@ -197,7 +197,7 @@ export function RegisterForm() {
         <div className="p-4 rounded-xl bg-surface-raised border border-border/80 text-xs text-text-subtle text-left space-y-1.5">
           <p className="font-semibold text-text-primary">Next Steps:</p>
           <p>1. Open your email inbox and click the verification button.</p>
-          <p>2. You will be redirected immediately to your GymLogger workout dashboard.</p>
+          <p>2. You will be redirected to the authentication confirmation page.</p>
           <p className="text-[11px] pt-1 text-text-subtle/80">
             Check your spam folder if it doesn&apos;t arrive within 60 seconds.
           </p>

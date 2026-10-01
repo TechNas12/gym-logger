@@ -19,8 +19,14 @@ export default async function LoginSuccessPage() {
     redirect('/login?next=/login-success');
   }
 
-  const firstName = user.user_metadata?.first_name as string | undefined;
-  const fullName = user.user_metadata?.full_name as string | undefined;
+  const firstName =
+    typeof user.user_metadata?.first_name === 'string'
+      ? user.user_metadata.first_name
+      : undefined;
+  const fullName =
+    typeof user.user_metadata?.full_name === 'string'
+      ? user.user_metadata.full_name
+      : undefined;
 
   return (
     <main className="min-h-screen flex items-center justify-center p-4 bg-background selection:bg-accent/30 selection:text-text-primary">

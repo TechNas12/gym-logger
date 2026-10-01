@@ -17,7 +17,6 @@ export function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
 
   const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
   const [errorDetails, setErrorDetails] = useState<AuthErrorDetails | null>(null);
@@ -216,20 +215,6 @@ export function LoginForm() {
         )}
       </div>
 
-      {/* Remember me row */}
-      <div className="flex items-center justify-between pt-1">
-        <label className="flex items-center gap-2 cursor-pointer group select-none min-h-[32px]">
-          <input
-            type="checkbox"
-            checked={rememberMe}
-            onChange={(e) => setRememberMe(e.target.checked)}
-            className="w-4 h-4 rounded border-border text-accent focus:ring-accent bg-surface-raised accent-accent cursor-pointer"
-          />
-          <span className="text-xs text-text-muted group-hover:text-text-primary transition-colors">
-            Keep me signed in
-          </span>
-        </label>
-      </div>
 
       {/* Submit Button */}
       <div className="pt-2">
