@@ -109,7 +109,7 @@ export function Footer() {
                 </li>
                 <li className="pt-1">
                   <span className="text-[11px] sm:text-xs text-text-subtle block leading-tight">
-                    Next.js 16 • React 19 • Supabase • Prisma
+                    Next.js 16 • React 19 • Supabase PostgreSQL
                   </span>
                 </li>
               </ul>

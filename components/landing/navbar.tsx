@@ -52,7 +52,7 @@ export function Navbar() {
                 </span>
               </span>
               <span className="text-[10px] text-text-subtle font-mono hidden md:inline">
-                100% Free & Open Source
+                Ad-Free, Simple & 100% Free
               </span>
             </div>
           </Link>

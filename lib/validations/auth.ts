@@ -32,6 +32,18 @@ export function checkPasswordRequirements(password: string) {
   }));
 }
 
+export const firstNameSchema = z
+  .string()
+  .trim()
+  .min(1, 'First name is required')
+  .max(50, 'First name must be 50 characters or less');
+
+export const lastNameSchema = z
+  .string()
+  .trim()
+  .min(1, 'Last name is required')
+  .max(50, 'Last name must be 50 characters or less');
+
 /**
  * Standard email schema with trimming and lowercasing normalization
  */
@@ -63,6 +75,8 @@ export const loginSchema = z.object({
 
 export const registerSchema = z
   .object({
+    firstName: firstNameSchema,
+    lastName: lastNameSchema,
     email: emailSchema,
     password: passwordSchema,
     confirmPassword: z.string().min(1, 'Please confirm your password'),

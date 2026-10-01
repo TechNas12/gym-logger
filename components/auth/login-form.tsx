@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Mail, Lock, ArrowRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { loginSchema } from '@/lib/validations/auth';
 import { mapAuthError, type AuthErrorDetails } from '@/lib/auth-errors';
@@ -17,6 +17,7 @@ export function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
 
   const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
   const [errorDetails, setErrorDetails] = useState<AuthErrorDetails | null>(null);
@@ -117,50 +118,60 @@ export function LoginForm() {
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-text-primary mb-1.5"
+          className="block text-xs uppercase tracking-wider font-semibold text-text-primary mb-2"
         >
           Email address
         </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={isPending}
-          placeholder="you@example.com"
-          aria-invalid={Boolean(fieldErrors.email)}
-          aria-describedby={fieldErrors.email ? 'email-error' : undefined}
-          className={`w-full px-3.5 py-2.5 rounded-lg bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-150 focus-ring ${
-            fieldErrors.email
-              ? 'border-danger focus-visible:ring-danger'
-              : 'border-border hover:border-border-focus/60'
-          }`}
-        />
+        <div className="relative">
+          <Mail 
+            className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" 
+            aria-hidden="true" 
+          />
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isPending}
+            placeholder="athlete@gymlogger.com"
+            aria-invalid={Boolean(fieldErrors.email)}
+            aria-describedby={fieldErrors.email ? 'email-error' : undefined}
+            className={`w-full pl-10 pr-3.5 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${
+              fieldErrors.email
+                ? 'border-danger focus-visible:ring-danger bg-danger-bg/20'
+                : 'border-border/80 hover:border-border-focus/60'
+            }`}
+          />
+        </div>
         {fieldErrors.email && (
           <p
             id="email-error"
             role="alert"
-            className="mt-1.5 text-xs text-danger font-medium animate-in fade-in"
+            className="mt-1.5 text-xs text-danger font-medium animate-in fade-in flex items-center gap-1.5"
           >
-            {fieldErrors.email}
+            <span>•</span> {fieldErrors.email}
           </p>
         )}
       </div>
 
       {/* Password Input */}
       <div>
-        <div className="flex items-center justify-between mb-1.5">
+        <div className="flex items-center justify-between mb-2">
           <label
             htmlFor="password"
-            className="block text-sm font-medium text-text-primary"
+            className="block text-xs uppercase tracking-wider font-semibold text-text-primary"
           >
             Password
           </label>
         </div>
         <div className="relative">
+          <Lock 
+            className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" 
+            aria-hidden="true" 
+          />
           <input
             id="password"
             name="password"
@@ -170,13 +181,13 @@ export function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={isPending}
-            placeholder="••••••••"
+            placeholder="••••••••••••"
             aria-invalid={Boolean(fieldErrors.password)}
             aria-describedby={fieldErrors.password ? 'password-error' : undefined}
-            className={`w-full pl-3.5 pr-11 py-2.5 rounded-lg bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-150 focus-ring ${
+            className={`w-full pl-10 pr-12 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${
               fieldErrors.password
-                ? 'border-danger focus-visible:ring-danger'
-                : 'border-border hover:border-border-focus/60'
+                ? 'border-danger focus-visible:ring-danger bg-danger-bg/20'
+                : 'border-border/80 hover:border-border-focus/60'
             }`}
           />
           <button
@@ -185,7 +196,7 @@ export function LoginForm() {
             tabIndex={0}
             disabled={isPending}
             aria-label={showPassword ? 'Hide password' : 'Show password'}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-text-subtle hover:text-text-primary rounded-md focus-ring"
+            className="absolute right-1 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center text-text-subtle hover:text-text-primary rounded-lg focus-ring transition-colors cursor-pointer"
           >
             {showPassword ? (
               <EyeOff className="w-4 h-4" aria-hidden="true" />
@@ -198,11 +209,26 @@ export function LoginForm() {
           <p
             id="password-error"
             role="alert"
-            className="mt-1.5 text-xs text-danger font-medium animate-in fade-in"
+            className="mt-1.5 text-xs text-danger font-medium animate-in fade-in flex items-center gap-1.5"
           >
-            {fieldErrors.password}
+            <span>•</span> {fieldErrors.password}
           </p>
         )}
+      </div>
+
+      {/* Remember me row */}
+      <div className="flex items-center justify-between pt-1">
+        <label className="flex items-center gap-2 cursor-pointer group select-none min-h-[32px]">
+          <input
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+            className="w-4 h-4 rounded border-border text-accent focus:ring-accent bg-surface-raised accent-accent cursor-pointer"
+          />
+          <span className="text-xs text-text-muted group-hover:text-text-primary transition-colors">
+            Keep me signed in
+          </span>
+        </label>
       </div>
 
       {/* Submit Button */}
@@ -210,15 +236,18 @@ export function LoginForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-accent text-accent-foreground font-semibold text-sm hover:bg-accent-hover active:bg-accent-active disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 focus-ring shadow-lg shadow-accent/20 cursor-pointer"
+          className="w-full min-h-[48px] inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-accent text-accent-foreground font-bold text-sm sm:text-base hover:bg-accent-hover active:bg-accent-active active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus-ring shadow-[0_0_25px_rgba(34,197,94,0.35)] hover:shadow-[0_0_35px_rgba(34,197,94,0.5)] cursor-pointer group"
         >
           {isPending ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
-              <span>Signing in...</span>
+              <span>Authenticating...</span>
             </>
           ) : (
-            <span>Sign In</span>
+            <>
+              <span>Sign In To GymLogger</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </>
           )}
         </button>
       </div>

@@ -3,7 +3,18 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Eye, EyeOff, Loader2, MailCheck, RefreshCw } from 'lucide-react';
+import { 
+  Eye, 
+  EyeOff, 
+  Loader2, 
+  MailCheck, 
+  RefreshCw, 
+  Mail, 
+  Lock, 
+  User,
+  ArrowRight,
+  ShieldCheck
+} from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { registerSchema } from '@/lib/validations/auth';
 import { mapAuthError, type AuthErrorDetails } from '@/lib/auth-errors';
@@ -13,6 +24,8 @@ import { FormErrorBanner } from './form-error-banner';
 export function RegisterForm() {
   const router = useRouter();
 
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -21,6 +34,8 @@ export function RegisterForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [fieldErrors, setFieldErrors] = useState<{
+    firstName?: string;
+    lastName?: string;
     email?: string;
     password?: string;
     confirmPassword?: string;
@@ -64,15 +79,26 @@ export function RegisterForm() {
     setResendSuccess(false);
 
     // 1. Zod client validation
-    const parsed = registerSchema.safeParse({ email, password, confirmPassword });
+    const parsed = registerSchema.safeParse({ 
+      firstName, 
+      lastName, 
+      email, 
+      password, 
+      confirmPassword 
+    });
+
     if (!parsed.success) {
       const errors: {
+        firstName?: string;
+        lastName?: string;
         email?: string;
         password?: string;
         confirmPassword?: string;
       } = {};
       for (const issue of parsed.error.issues) {
         const fieldName = issue.path[0] as
+          | 'firstName'
+          | 'lastName'
           | 'email'
           | 'password'
           | 'confirmPassword';
@@ -98,6 +124,11 @@ export function RegisterForm() {
             typeof window !== 'undefined'
               ? `${window.location.origin}/login-success`
               : undefined,
+          data: {
+            first_name: parsed.data.firstName,
+            last_name: parsed.data.lastName,
+            full_name: `${parsed.data.firstName} ${parsed.data.lastName}`.trim(),
+          },
         },
       });
 
@@ -110,9 +141,6 @@ export function RegisterForm() {
       }
 
       // Check if email confirmation is required:
-      // When email confirmation is enabled, Supabase returns a user object but NO active session.
-      // If user is already registered (and Supabase has "prevent email enumeration" enabled),
-      // data.user.identities may be empty [].
       if (data.user && !data.session) {
         // If identities is present and empty, user already registered
         if (data.user.identities && data.user.identities.length === 0) {
@@ -145,48 +173,57 @@ export function RegisterForm() {
     }
   };
 
-  // "Check your inbox" state
+  // "Check your inbox" screen
   if (needsEmailConfirmation) {
     return (
-      <div className="text-center py-2 space-y-4">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-accent-glow text-accent ring-1 ring-accent/30 mx-auto">
-          <MailCheck className="w-7 h-7" aria-hidden="true" />
+      <div className="text-center py-4 space-y-5 animate-in fade-in zoom-in-95 duration-200">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-accent/20 border border-accent/40 text-accent shadow-[0_0_30px_rgba(34,197,94,0.35)] mx-auto">
+          <MailCheck className="w-8 h-8" aria-hidden="true" />
         </div>
 
         <div>
-          <h2 className="text-xl font-bold text-text-primary">Check your inbox</h2>
-          <p className="mt-2 text-sm text-text-muted leading-relaxed">
-            We have sent a verification link to{' '}
-            <strong className="text-text-primary font-semibold">{email}</strong>.
-            Please click the link in that email to confirm your account.
+          <h2 className="text-2xl font-extrabold text-text-primary">
+            Welcome, {firstName}!
+          </h2>
+          <p className="mt-2 text-xs sm:text-sm text-text-muted leading-relaxed">
+            We sent a secure confirmation link to:
+            <br />
+            <strong className="text-text-primary font-bold text-sm block mt-1 font-mono">
+              {email}
+            </strong>
           </p>
         </div>
 
-        <div className="p-3.5 rounded-lg bg-surface-raised border border-border/80 text-xs text-text-subtle">
-          Didn&apos;t receive the email? Check your spam folder or click below to resend.
+        <div className="p-4 rounded-xl bg-surface-raised border border-border/80 text-xs text-text-subtle text-left space-y-1.5">
+          <p className="font-semibold text-text-primary">Next Steps:</p>
+          <p>1. Open your email inbox and click the verification button.</p>
+          <p>2. You will be redirected immediately to your GymLogger workout dashboard.</p>
+          <p className="text-[11px] pt-1 text-text-subtle/80">
+            Check your spam folder if it doesn&apos;t arrive within 60 seconds.
+          </p>
         </div>
 
-        <div className="pt-2 flex flex-col gap-2.5">
+        <div className="pt-2 flex flex-col gap-3">
           {resendSuccess ? (
-            <div className="p-2.5 rounded-lg bg-success-bg border border-success-border text-success text-xs font-medium">
-              ✓ Verification link resent! Please check your inbox.
+            <div className="p-3 rounded-xl bg-success-bg border border-success-border text-success text-xs font-semibold">
+              ✓ Verification link resent! Check your inbox.
             </div>
           ) : (
             <button
               type="button"
               onClick={handleResendConfirmation}
               disabled={isResending}
-              className="inline-flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-surface-raised border border-border hover:bg-surface-hover text-text-primary text-xs font-medium focus-ring cursor-pointer"
+              className="min-h-[44px] inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-surface-raised border border-border hover:bg-surface-hover text-text-primary text-xs font-semibold focus-ring cursor-pointer transition-colors active:scale-[0.99]"
             >
               {isResending ? (
                 <>
                   <RefreshCw className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
-                  Resending...
+                  <span>Resending link...</span>
                 </>
               ) : (
                 <>
                   <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />
-                  Resend confirmation link
+                  <span>Resend confirmation link</span>
                 </>
               )}
             </button>
@@ -194,9 +231,9 @@ export function RegisterForm() {
 
           <Link
             href="/login"
-            className="text-xs font-semibold text-accent hover:text-accent-hover underline-offset-4 hover:underline focus-ring rounded py-1"
+            className="min-h-[40px] flex items-center justify-center text-xs font-semibold text-accent hover:text-accent-hover underline-offset-4 hover:underline focus-ring rounded py-1"
           >
-            Back to login
+            ← Back to sign in
           </Link>
         </div>
       </div>
@@ -214,39 +251,134 @@ export function RegisterForm() {
         resendSuccess={resendSuccess}
       />
 
+      {/* First Name & Last Name (Split into 2 parts) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        {/* First Name Input */}
+        <div>
+          <label
+            htmlFor="register-firstname"
+            className="block text-xs uppercase tracking-wider font-semibold text-text-primary mb-2"
+          >
+            First name
+          </label>
+          <div className="relative">
+            <User 
+              className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" 
+              aria-hidden="true" 
+            />
+            <input
+              id="register-firstname"
+              name="firstName"
+              type="text"
+              autoComplete="given-name"
+              required
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              disabled={isPending}
+              placeholder="Alex"
+              aria-invalid={Boolean(fieldErrors.firstName)}
+              aria-describedby={fieldErrors.firstName ? 'register-firstname-error' : undefined}
+              className={`w-full pl-10 pr-3.5 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${
+                fieldErrors.firstName
+                  ? 'border-danger focus-visible:ring-danger bg-danger-bg/20'
+                  : 'border-border/80 hover:border-border-focus/60'
+              }`}
+            />
+          </div>
+          {fieldErrors.firstName && (
+            <p
+              id="register-firstname-error"
+              role="alert"
+              className="mt-1.5 text-xs text-danger font-medium animate-in fade-in flex items-center gap-1.5"
+            >
+              <span>•</span> {fieldErrors.firstName}
+            </p>
+          )}
+        </div>
+
+        {/* Last Name Input */}
+        <div>
+          <label
+            htmlFor="register-lastname"
+            className="block text-xs uppercase tracking-wider font-semibold text-text-primary mb-2"
+          >
+            Last name
+          </label>
+          <div className="relative">
+            <User 
+              className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" 
+              aria-hidden="true" 
+            />
+            <input
+              id="register-lastname"
+              name="lastName"
+              type="text"
+              autoComplete="family-name"
+              required
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              disabled={isPending}
+              placeholder="Morgan"
+              aria-invalid={Boolean(fieldErrors.lastName)}
+              aria-describedby={fieldErrors.lastName ? 'register-lastname-error' : undefined}
+              className={`w-full pl-10 pr-3.5 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${
+                fieldErrors.lastName
+                  ? 'border-danger focus-visible:ring-danger bg-danger-bg/20'
+                  : 'border-border/80 hover:border-border-focus/60'
+              }`}
+            />
+          </div>
+          {fieldErrors.lastName && (
+            <p
+              id="register-lastname-error"
+              role="alert"
+              className="mt-1.5 text-xs text-danger font-medium animate-in fade-in flex items-center gap-1.5"
+            >
+              <span>•</span> {fieldErrors.lastName}
+            </p>
+          )}
+        </div>
+      </div>
+
       {/* Email Input */}
       <div>
         <label
           htmlFor="register-email"
-          className="block text-sm font-medium text-text-primary mb-1.5"
+          className="block text-xs uppercase tracking-wider font-semibold text-text-primary mb-2"
         >
           Email address
         </label>
-        <input
-          id="register-email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={isPending}
-          placeholder="you@example.com"
-          aria-invalid={Boolean(fieldErrors.email)}
-          aria-describedby={fieldErrors.email ? 'register-email-error' : undefined}
-          className={`w-full px-3.5 py-2.5 rounded-lg bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-150 focus-ring ${
-            fieldErrors.email
-              ? 'border-danger focus-visible:ring-danger'
-              : 'border-border hover:border-border-focus/60'
-          }`}
-        />
+        <div className="relative">
+          <Mail 
+            className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" 
+            aria-hidden="true" 
+          />
+          <input
+            id="register-email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isPending}
+            placeholder="athlete@gymlogger.com"
+            aria-invalid={Boolean(fieldErrors.email)}
+            aria-describedby={fieldErrors.email ? 'register-email-error' : undefined}
+            className={`w-full pl-10 pr-3.5 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${
+              fieldErrors.email
+                ? 'border-danger focus-visible:ring-danger bg-danger-bg/20'
+                : 'border-border/80 hover:border-border-focus/60'
+            }`}
+          />
+        </div>
         {fieldErrors.email && (
           <p
             id="register-email-error"
             role="alert"
-            className="mt-1.5 text-xs text-danger font-medium animate-in fade-in"
+            className="mt-1.5 text-xs text-danger font-medium animate-in fade-in flex items-center gap-1.5"
           >
-            {fieldErrors.email}
+            <span>•</span> {fieldErrors.email}
           </p>
         )}
       </div>
@@ -255,11 +387,15 @@ export function RegisterForm() {
       <div>
         <label
           htmlFor="register-password"
-          className="block text-sm font-medium text-text-primary mb-1.5"
+          className="block text-xs uppercase tracking-wider font-semibold text-text-primary mb-2"
         >
           Password
         </label>
         <div className="relative">
+          <Lock 
+            className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" 
+            aria-hidden="true" 
+          />
           <input
             id="register-password"
             name="password"
@@ -269,15 +405,15 @@ export function RegisterForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={isPending}
-            placeholder="••••••••"
+            placeholder="Create a strong password"
             aria-invalid={Boolean(fieldErrors.password)}
             aria-describedby={
               fieldErrors.password ? 'register-password-error' : undefined
             }
-            className={`w-full pl-3.5 pr-11 py-2.5 rounded-lg bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-150 focus-ring ${
+            className={`w-full pl-10 pr-12 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${
               fieldErrors.password
-                ? 'border-danger focus-visible:ring-danger'
-                : 'border-border hover:border-border-focus/60'
+                ? 'border-danger focus-visible:ring-danger bg-danger-bg/20'
+                : 'border-border/80 hover:border-border-focus/60'
             }`}
           />
           <button
@@ -286,7 +422,7 @@ export function RegisterForm() {
             tabIndex={0}
             disabled={isPending}
             aria-label={showPassword ? 'Hide password' : 'Show password'}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-text-subtle hover:text-text-primary rounded-md focus-ring"
+            className="absolute right-1 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center text-text-subtle hover:text-text-primary rounded-lg focus-ring transition-colors cursor-pointer"
           >
             {showPassword ? (
               <EyeOff className="w-4 h-4" aria-hidden="true" />
@@ -299,9 +435,9 @@ export function RegisterForm() {
           <p
             id="register-password-error"
             role="alert"
-            className="mt-1.5 text-xs text-danger font-medium animate-in fade-in"
+            className="mt-1.5 text-xs text-danger font-medium animate-in fade-in flex items-center gap-1.5"
           >
-            {fieldErrors.password}
+            <span>•</span> {fieldErrors.password}
           </p>
         )}
 
@@ -313,11 +449,15 @@ export function RegisterForm() {
       <div>
         <label
           htmlFor="register-confirm-password"
-          className="block text-sm font-medium text-text-primary mb-1.5"
+          className="block text-xs uppercase tracking-wider font-semibold text-text-primary mb-2"
         >
           Confirm password
         </label>
         <div className="relative">
+          <Lock 
+            className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" 
+            aria-hidden="true" 
+          />
           <input
             id="register-confirm-password"
             name="confirmPassword"
@@ -327,17 +467,17 @@ export function RegisterForm() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             disabled={isPending}
-            placeholder="••••••••"
+            placeholder="Repeat password"
             aria-invalid={Boolean(fieldErrors.confirmPassword)}
             aria-describedby={
               fieldErrors.confirmPassword
                 ? 'register-confirm-password-error'
                 : undefined
             }
-            className={`w-full pl-3.5 pr-11 py-2.5 rounded-lg bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-150 focus-ring ${
+            className={`w-full pl-10 pr-12 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${
               fieldErrors.confirmPassword
-                ? 'border-danger focus-visible:ring-danger'
-                : 'border-border hover:border-border-focus/60'
+                ? 'border-danger focus-visible:ring-danger bg-danger-bg/20'
+                : 'border-border/80 hover:border-border-focus/60'
             }`}
           />
           <button
@@ -348,7 +488,7 @@ export function RegisterForm() {
             aria-label={
               showConfirmPassword ? 'Hide confirmed password' : 'Show confirmed password'
             }
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-text-subtle hover:text-text-primary rounded-md focus-ring"
+            className="absolute right-1 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center text-text-subtle hover:text-text-primary rounded-lg focus-ring transition-colors cursor-pointer"
           >
             {showConfirmPassword ? (
               <EyeOff className="w-4 h-4" aria-hidden="true" />
@@ -361,11 +501,17 @@ export function RegisterForm() {
           <p
             id="register-confirm-password-error"
             role="alert"
-            className="mt-1.5 text-xs text-danger font-medium animate-in fade-in"
+            className="mt-1.5 text-xs text-danger font-medium animate-in fade-in flex items-center gap-1.5"
           >
-            {fieldErrors.confirmPassword}
+            <span>•</span> {fieldErrors.confirmPassword}
           </p>
         )}
+      </div>
+
+      {/* Trust pill */}
+      <div className="pt-1 flex items-center gap-2 text-[11px] text-text-subtle">
+        <ShieldCheck className="w-3.5 h-3.5 text-accent shrink-0" />
+        <span>No credit card required. MIT Open-source forever.</span>
       </div>
 
       {/* Submit Button */}
@@ -373,15 +519,18 @@ export function RegisterForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-accent text-accent-foreground font-semibold text-sm hover:bg-accent-hover active:bg-accent-active disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 focus-ring shadow-lg shadow-accent/20 cursor-pointer"
+          className="w-full min-h-[48px] inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-accent text-accent-foreground font-bold text-sm sm:text-base hover:bg-accent-hover active:bg-accent-active active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus-ring shadow-[0_0_25px_rgba(34,197,94,0.35)] hover:shadow-[0_0_35px_rgba(34,197,94,0.5)] cursor-pointer group"
         >
           {isPending ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
-              <span>Creating account...</span>
+              <span>Creating your account...</span>
             </>
           ) : (
-            <span>Create Account</span>
+            <>
+              <span>Create Free Lifetime Account</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </>
           )}
         </button>
       </div>

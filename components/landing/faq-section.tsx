@@ -24,7 +24,7 @@ const FAQS = [
   {
     question: 'Can I self-host GymLogger on my own VPS or homelab?',
     answer:
-      'Absolutely. GymLogger is built with Next.js, React, Prisma, and Supabase. You can clone the repo, connect your own database (SQLite or PostgreSQL), and deploy it to Vercel, Docker, Fly.io, or your local server.',
+      'Absolutely. GymLogger is built with Next.js, React, and Supabase. You can clone the repo, connect your own Supabase project, and deploy it to Vercel, Docker, Fly.io, or your own hosting provider.',
   },
   {
     question: 'Does it work smoothly on mobile browsers inside the gym?',

@@ -8,7 +8,9 @@ import {
   Zap, 
   ShieldCheck, 
   Flame, 
-  Database
+  Database,
+  Ban,
+  EyeOff
 } from 'lucide-react';
 import { GithubIcon } from './icons';
 import { ScrollReveal } from './scroll-reveal';
@@ -35,27 +37,27 @@ export function Hero() {
             <span className="text-border">|</span>
             <span className="text-accent font-medium">100% Free Forever • MIT</span>
             <span className="text-border hidden sm:inline">|</span>
-            <span className="text-text-subtle hidden sm:inline font-mono">No paywalls</span>
+            <span className="text-text-subtle hidden sm:inline font-mono">Zero Ads • No Trackers</span>
           </div>
         </ScrollReveal>
 
         {/* Main Athletic Headline */}
         <ScrollReveal delayMs={100} direction="up">
           <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight text-text-primary max-w-5xl mx-auto leading-[1.12] sm:leading-[1.08]">
-            Log Every Set.{' '}
+            Simple. Functional.{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-emerald-400 to-lime-300">
-              Crush Every PR.
+              100% Free.
             </span>
             <br className="hidden sm:inline" />
-            {' '}Own Your Training Data.
+            {' '}Zero Ads. Zero Trackers. Total Freedom.
           </h1>
         </ScrollReveal>
 
         {/* Subtitle */}
         <ScrollReveal delayMs={200} direction="up">
           <p className="mt-4 sm:mt-6 text-base sm:text-xl text-text-muted max-w-3xl mx-auto leading-relaxed font-normal">
-            Tired of gym apps that lock your progress charts behind expensive subscriptions? 
-            <span className="text-text-primary font-medium"> GymLogger</span> is the high-performance, open-source workout tracker built for lifters who take progressive overload seriously.
+            Tired of bloated fitness apps showing full-screen ads mid-set or locking basic routines behind expensive subscriptions? 
+            <span className="text-text-primary font-medium"> GymLogger</span> gives you pure lifting functionality, effortless 2-tap set logging, and complete freedom to own your training data.
           </p>
         </ScrollReveal>
 
@@ -67,7 +69,7 @@ export function Hero() {
               href="/register"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-accent text-accent-foreground font-bold text-sm sm:text-base shadow-[0_0_30px_rgba(34,197,94,0.4)] hover:shadow-[0_0_40px_rgba(34,197,94,0.6)] hover:bg-accent-hover transition-all duration-200 cursor-pointer group"
             >
-              <span>Register Now — Free Forever</span>
+              <span>Register Now — 100% Free & Ad-Free</span>
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-200" />
             </Link>
 
@@ -98,11 +100,11 @@ export function Hero() {
           <ScrollReveal delayMs={350} direction="up">
             <div className="flex items-center gap-3 p-3 rounded-xl bg-surface/50 border border-border/60 hover:border-accent/30 transition-colors">
               <div className="p-2 rounded-lg bg-accent/10 text-accent">
-                <Zap className="w-5 h-5" />
+                <Ban className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-text-primary">Zero Paywalls</p>
-                <p className="text-xs text-text-subtle">All features unlocked</p>
+                <p className="text-sm font-semibold text-text-primary">Zero Ads Ever</p>
+                <p className="text-xs text-text-subtle">No popups or interruptions</p>
               </div>
             </div>
           </ScrollReveal>
@@ -110,11 +112,11 @@ export function Hero() {
           <ScrollReveal delayMs={450} direction="up">
             <div className="flex items-center gap-3 p-3 rounded-xl bg-surface/50 border border-border/60 hover:border-emerald-500/30 transition-colors">
               <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400">
-                <Database className="w-5 h-5" />
+                <EyeOff className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-text-primary">Data Sovereignty</p>
-                <p className="text-xs text-text-subtle">Export CSV / JSON anytime</p>
+                <p className="text-sm font-semibold text-text-primary">Zero Trackers</p>
+                <p className="text-xs text-text-subtle">100% private, no analytics</p>
               </div>
             </div>
           </ScrollReveal>
@@ -122,11 +124,11 @@ export function Hero() {
           <ScrollReveal delayMs={550} direction="up">
             <div className="flex items-center gap-3 p-3 rounded-xl bg-surface/50 border border-border/60 hover:border-orange-500/30 transition-colors">
               <div className="p-2 rounded-lg bg-orange-500/10 text-orange-400">
-                <Flame className="w-5 h-5" />
+                <Zap className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-text-primary">Auto 1RM Math</p>
-                <p className="text-xs text-text-subtle">Instant PR calculations</p>
+                <p className="text-sm font-semibold text-text-primary">Pure Functionality</p>
+                <p className="text-xs text-text-subtle">Fast 2-tap set logging</p>
               </div>
             </div>
           </ScrollReveal>
@@ -137,8 +139,8 @@ export function Hero() {
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-text-primary">Self-Hostable</p>
-                <p className="text-xs text-text-subtle">Next.js + Supabase + SQLite</p>
+                <p className="text-sm font-semibold text-text-primary">Total Freedom</p>
+                <p className="text-xs text-text-subtle">Export CSV/JSON • MIT FOSS</p>
               </div>
             </div>
           </ScrollReveal>

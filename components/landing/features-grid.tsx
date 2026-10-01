@@ -93,13 +93,13 @@ export function FeaturesGrid() {
               Built By Lifters For Lifters
             </div>
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-text-primary">
-              Every Feature You Need.{' '}
+              Pure Functionality.{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-emerald-400">
-                None Of The Bloat.
+                Zero Ads. Total Freedom.
               </span>
             </h2>
             <p className="mt-3 sm:mt-4 text-sm sm:text-lg text-text-muted">
-              Engineered for high performance at the squat rack. Fast logging, zero ads, no battery drain, and uncompromised privacy.
+              Engineered for effortless speed at the squat rack. Instant 2-tap set logging, automated plate and 1RM math, zero tracking scripts, and completely free forever.
             </p>
           </div>
         </ScrollReveal>

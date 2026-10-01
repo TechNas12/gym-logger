@@ -7,6 +7,24 @@ import { ScrollReveal } from './scroll-reveal';
 
 const COMPARISON_ROWS = [
   {
+    feature: 'In-App Advertisements',
+    gymLogger: '0 Ads Ever (Pure Focus)',
+    others: 'Popups & unskippable video ads',
+    isAdvantage: true,
+  },
+  {
+    feature: 'Data Privacy & Telemetry',
+    gymLogger: '0 Trackers (100% Private)',
+    others: 'Advertising IDs & tracking pixels',
+    isAdvantage: true,
+  },
+  {
+    feature: 'Ease of Use & Simplicity',
+    gymLogger: 'Instant 2-tap set logging',
+    others: 'Cluttered UI & promotional popups',
+    isAdvantage: true,
+  },
+  {
     feature: 'Custom Workout Routines',
     gymLogger: 'Unlimited (Free)',
     others: 'Capped at 3 routines on free tier',
@@ -28,18 +46,6 @@ const COMPARISON_ROWS = [
     feature: 'Data Export (CSV / JSON)',
     gymLogger: '1-click export anytime',
     others: 'Locked or restricted',
-    isAdvantage: true,
-  },
-  {
-    feature: 'Privacy & Data Sovereignty',
-    gymLogger: 'Zero third-party trackers or ads',
-    others: 'Targeted ads & analytics trackers',
-    isAdvantage: true,
-  },
-  {
-    feature: 'Self-Hosting Option',
-    gymLogger: 'Yes (Docker, SQLite, Postgres)',
-    others: 'No (Locked in proprietary cloud)',
     isAdvantage: true,
   },
   {

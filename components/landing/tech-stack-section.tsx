@@ -35,10 +35,10 @@ const STACK_ITEMS = [
     badge: 'Auth Ready',
   },
   {
-    name: 'Prisma ORM 7',
-    role: 'Type-Safe Data Layer',
-    description: 'Zero-overhead queries with full SQLite and PostgreSQL portability.',
-    badge: 'Type-Safe',
+    name: 'Supabase Database',
+    role: 'Unified PostgreSQL',
+    description: 'Managed Postgres with instant row-level security and relational queries.',
+    badge: 'PostgreSQL',
   },
   {
     name: 'Tailwind CSS v4',
