@@ -69,7 +69,6 @@ yarn-error.log*
 # TypeScript & Code Generation
 *.tsbuildinfo
 next-env.d.ts
-/app/generated/prisma
 
 # OS Generated Files
 .DS_Store

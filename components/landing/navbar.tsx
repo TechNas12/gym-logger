@@ -47,12 +47,9 @@ export function Navbar() {
             <div className="flex flex-col">
               <span className="text-base sm:text-lg font-bold tracking-tight text-text-primary flex items-center gap-1.5">
                 Gym<span className="text-accent">Logger</span>
-                <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-accent/15 text-accent border border-accent/30">
-                  FOSS
-                </span>
               </span>
               <span className="text-[10px] text-text-subtle font-mono hidden md:inline">
-                100% Free & Open Source
+                Ad-Free, Simple & 100% Free
               </span>
             </div>
           </Link>
