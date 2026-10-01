@@ -35,6 +35,12 @@ export function LoginForm() {
       const { error } = await supabase.auth.resend({
         type: 'signup',
         email: email.trim().toLowerCase(),
+        options: {
+          emailRedirectTo:
+            typeof window !== 'undefined'
+              ? `${window.location.origin}/auth/callback?next=/login-success`
+              : undefined,
+        },
       });
 
       if (error) {
