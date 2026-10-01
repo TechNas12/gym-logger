@@ -1,26 +1,105 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --surface: #121212;
+  --surface-raised: #18181b;
+  --surface-hover: #232326;
+  --border: #27272a;
+  --border-subtle: #1f1f23;
+  --border-focus: #22c55e;
+  --text-primary: #f4f4f5;
+  --text-muted: #a1a1aa;
+  --text-subtle: #71717a;
+  --accent: #22c55e;
+  --accent-hover: #16a34a;
+  --accent-active: #15803d;
+  --accent-foreground: #052e16;
+  --accent-glow: rgba(34, 197, 94, 0.18);
+  --danger: #ef4444;
+  --danger-bg: rgba(239, 68, 68, 0.12);
+  --danger-border: rgba(239, 68, 68, 0.35);
+  --warning: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.12);
+  --warning-border: rgba(245, 158, 11, 0.35);
+  --success: #22c55e;
+  --success-bg: rgba(34, 197, 94, 0.12);
+  --success-border: rgba(34, 197, 94, 0.35);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-focus: var(--border-focus);
+  --color-text-primary: var(--text-primary);
+  --color-text-muted: var(--text-muted);
+  --color-text-subtle: var(--text-subtle);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-active: var(--accent-active);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-glow: var(--accent-glow);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-danger-border: var(--danger-border);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-warning-border: var(--warning-border);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-success-border: var(--success-border);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+/* Custom interactive utility focus ring */
+.focus-ring {
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.focus-ring:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--accent);
+}
+
+/* Scroll reveal helper transitions */
+.reveal-hidden {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal-hidden {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
