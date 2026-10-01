@@ -10,15 +10,40 @@ export async function GET(request: NextRequest) {
   const type = searchParams.get('type') as EmailOtpType | null;
   const next = searchParams.get('next');
 
-  const destination = getSafeRedirectUrl(next, '/login-success');
+  const destination = getSafeRedirectUrl(next, '/dashboard');
 
   const supabase = await createClient();
+
+  // Helper to determine destination based on onboarding status
+  const getOnboardingAwareDestination = async (fallback: string) => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        const { data: profile } = await supabase
+          .from('users')
+          .select('is_onboarded')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (!profile?.is_onboarded) {
+          return '/onboarding';
+        }
+      }
+    } catch {
+      // Fallback if check fails
+    }
+    return fallback;
+  };
 
   // 1. Handle PKCE code exchange
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(`${origin}${destination}`);
+      const target = await getOnboardingAwareDestination(destination);
+      return NextResponse.redirect(`${origin}${target}`);
     }
   }
 
@@ -29,7 +54,8 @@ export async function GET(request: NextRequest) {
       token_hash,
     });
     if (!error) {
-      return NextResponse.redirect(`${origin}${destination}`);
+      const target = await getOnboardingAwareDestination(destination);
+      return NextResponse.redirect(`${origin}${target}`);
     }
   }
 

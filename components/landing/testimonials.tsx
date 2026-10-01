@@ -66,7 +66,7 @@ export function Testimonials() {
                     ))}
                   </div>
                   <p className="text-text-muted text-sm sm:text-base leading-relaxed italic">
-                    "{review.comment}"
+                    &ldquo;{review.comment}&rdquo;
                   </p>
                 </div>
 
