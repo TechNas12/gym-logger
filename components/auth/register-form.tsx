@@ -3,14 +3,14 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { 
-  Eye, 
-  EyeOff, 
-  Loader2, 
-  MailCheck, 
-  RefreshCw, 
-  Mail, 
-  Lock, 
+import {
+  Eye,
+  EyeOff,
+  Loader2,
+  MailCheck,
+  RefreshCw,
+  Mail,
+  Lock,
   User,
   ArrowRight,
   ShieldCheck
@@ -58,6 +58,12 @@ export function RegisterForm() {
       const { error } = await supabase.auth.resend({
         type: 'signup',
         email: email.trim().toLowerCase(),
+        options: {
+          emailRedirectTo:
+            typeof window !== 'undefined'
+              ? `${window.location.origin}/auth/callback?next=/login-success`
+              : undefined,
+        },
       });
 
       if (error) {
@@ -79,12 +85,12 @@ export function RegisterForm() {
     setResendSuccess(false);
 
     // 1. Zod client validation
-    const parsed = registerSchema.safeParse({ 
-      firstName, 
-      lastName, 
-      email, 
-      password, 
-      confirmPassword 
+    const parsed = registerSchema.safeParse({
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword
     });
 
     if (!parsed.success) {
@@ -122,7 +128,7 @@ export function RegisterForm() {
         options: {
           emailRedirectTo:
             typeof window !== 'undefined'
-              ? `${window.location.origin}/login-success`
+              ? `${window.location.origin}/auth/callback?next=/login-success`
               : undefined,
           data: {
             first_name: parsed.data.firstName,
@@ -262,9 +268,9 @@ export function RegisterForm() {
             First name
           </label>
           <div className="relative">
-            <User 
-              className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" 
-              aria-hidden="true" 
+            <User
+              className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+              aria-hidden="true"
             />
             <input
               id="register-firstname"
@@ -275,14 +281,13 @@ export function RegisterForm() {
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               disabled={isPending}
-              placeholder="Alex"
+              placeholder="Sanket"
               aria-invalid={Boolean(fieldErrors.firstName)}
               aria-describedby={fieldErrors.firstName ? 'register-firstname-error' : undefined}
-              className={`w-full pl-10 pr-3.5 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${
-                fieldErrors.firstName
+              className={`w-full pl-10 pr-3.5 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${fieldErrors.firstName
                   ? 'border-danger focus-visible:ring-danger bg-danger-bg/20'
                   : 'border-border/80 hover:border-border-focus/60'
-              }`}
+                }`}
             />
           </div>
           {fieldErrors.firstName && (
@@ -305,9 +310,9 @@ export function RegisterForm() {
             Last name
           </label>
           <div className="relative">
-            <User 
-              className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" 
-              aria-hidden="true" 
+            <User
+              className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+              aria-hidden="true"
             />
             <input
               id="register-lastname"
@@ -318,14 +323,13 @@ export function RegisterForm() {
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               disabled={isPending}
-              placeholder="Morgan"
+              placeholder="Dahotre"
               aria-invalid={Boolean(fieldErrors.lastName)}
               aria-describedby={fieldErrors.lastName ? 'register-lastname-error' : undefined}
-              className={`w-full pl-10 pr-3.5 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${
-                fieldErrors.lastName
+              className={`w-full pl-10 pr-3.5 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${fieldErrors.lastName
                   ? 'border-danger focus-visible:ring-danger bg-danger-bg/20'
                   : 'border-border/80 hover:border-border-focus/60'
-              }`}
+                }`}
             />
           </div>
           {fieldErrors.lastName && (
@@ -349,9 +353,9 @@ export function RegisterForm() {
           Email address
         </label>
         <div className="relative">
-          <Mail 
-            className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" 
-            aria-hidden="true" 
+          <Mail
+            className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+            aria-hidden="true"
           />
           <input
             id="register-email"
@@ -365,11 +369,10 @@ export function RegisterForm() {
             placeholder="athlete@gymlogger.com"
             aria-invalid={Boolean(fieldErrors.email)}
             aria-describedby={fieldErrors.email ? 'register-email-error' : undefined}
-            className={`w-full pl-10 pr-3.5 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${
-              fieldErrors.email
+            className={`w-full pl-10 pr-3.5 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${fieldErrors.email
                 ? 'border-danger focus-visible:ring-danger bg-danger-bg/20'
                 : 'border-border/80 hover:border-border-focus/60'
-            }`}
+              }`}
           />
         </div>
         {fieldErrors.email && (
@@ -392,9 +395,9 @@ export function RegisterForm() {
           Password
         </label>
         <div className="relative">
-          <Lock 
-            className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" 
-            aria-hidden="true" 
+          <Lock
+            className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+            aria-hidden="true"
           />
           <input
             id="register-password"
@@ -410,11 +413,10 @@ export function RegisterForm() {
             aria-describedby={
               fieldErrors.password ? 'register-password-error' : undefined
             }
-            className={`w-full pl-10 pr-12 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${
-              fieldErrors.password
+            className={`w-full pl-10 pr-12 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${fieldErrors.password
                 ? 'border-danger focus-visible:ring-danger bg-danger-bg/20'
                 : 'border-border/80 hover:border-border-focus/60'
-            }`}
+              }`}
           />
           <button
             type="button"
@@ -454,9 +456,9 @@ export function RegisterForm() {
           Confirm password
         </label>
         <div className="relative">
-          <Lock 
-            className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" 
-            aria-hidden="true" 
+          <Lock
+            className="w-4 h-4 text-text-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+            aria-hidden="true"
           />
           <input
             id="register-confirm-password"
@@ -474,11 +476,10 @@ export function RegisterForm() {
                 ? 'register-confirm-password-error'
                 : undefined
             }
-            className={`w-full pl-10 pr-12 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${
-              fieldErrors.confirmPassword
+            className={`w-full pl-10 pr-12 py-3 rounded-xl bg-surface-raised border text-text-primary text-sm placeholder:text-text-subtle transition-all duration-200 focus-ring min-h-[46px] ${fieldErrors.confirmPassword
                 ? 'border-danger focus-visible:ring-danger bg-danger-bg/20'
                 : 'border-border/80 hover:border-border-focus/60'
-            }`}
+              }`}
           />
           <button
             type="button"
