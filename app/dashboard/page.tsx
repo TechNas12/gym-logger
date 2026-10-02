@@ -15,6 +15,7 @@ import { SignOutButton } from '@/components/auth/sign-out-button';
 import { WorkoutHub } from '@/components/dashboard/workout-hub';
 import { AnalyticsKpiWidget } from '@/components/dashboard/analytics-kpi-widget';
 import { WorkoutCard } from '@/components/workout/history/workout-card';
+import { InstallAppButton } from '@/components/pwa/install-button';
 import { getWorkoutHistoryAction } from '@/app/workout/actions';
 import { getDashboardAnalyticsKpiAction } from '@/app/analytics/actions';
 import {
@@ -103,6 +104,7 @@ export default async function DashboardPage() {
         </Link>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          <InstallAppButton />
           <Link
             href="/analytics"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-raised border border-border/80 hover:bg-surface-hover text-emerald-400 text-xs font-semibold focus-ring transition-colors cursor-pointer min-h-[36px]"
