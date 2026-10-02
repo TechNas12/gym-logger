@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Dumbbell, Menu, X, ArrowRight, Sparkles } from 'lucide-react';
 import { GithubIcon } from './icons';
+import { InstallAppButton } from '@/components/pwa/install-button';
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -91,6 +92,7 @@ export function Navbar() {
 
           {/* Action CTAs Desktop */}
           <div className="hidden sm:flex items-center gap-2.5">
+            <InstallAppButton />
             <a
               href="https://github.com"
               target="_blank"
@@ -188,7 +190,13 @@ export function Navbar() {
                 <GithubIcon className="w-4 h-4" />
                 <span>Star on GitHub (Open Source)</span>
               </a>
-              <div className="pt-4 mt-2 border-t border-border/80 flex flex-col gap-2.5">
+              <div className="pt-2 pb-1">
+                <InstallAppButton
+                  className="w-full justify-center min-h-[44px]"
+                  variant="outline"
+                />
+              </div>
+              <div className="pt-3 mt-1 border-t border-border/80 flex flex-col gap-2.5">
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}
