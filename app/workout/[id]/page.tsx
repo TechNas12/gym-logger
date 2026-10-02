@@ -1,4 +1,5 @@
 import { notFound, redirect } from 'next/navigation';
+import { cache } from 'react';
 import { createClient } from '@/lib/supabase/server';
 import { getWorkoutDetailAction } from '@/app/workout/actions';
 import { WorkoutDetailView } from '@/components/workout/history/workout-detail-view';
@@ -9,9 +10,13 @@ interface WorkoutDetailPageProps {
   }>;
 }
 
+const getWorkout = cache(async (id: string) => {
+  return getWorkoutDetailAction(id);
+});
+
 export async function generateMetadata({ params }: WorkoutDetailPageProps) {
   const { id } = await params;
-  const res = await getWorkoutDetailAction(id);
+  const res = await getWorkout(id);
   if (!res.success || !res.data) {
     return { title: 'Workout Not Found | GymLogger' };
   }
@@ -33,7 +38,7 @@ export default async function WorkoutDetailPage({ params }: WorkoutDetailPagePro
     redirect(`/login?next=/workout/${id}`);
   }
 
-  const res = await getWorkoutDetailAction(id);
+  const res = await getWorkout(id);
 
   if (!res.success || !res.data) {
     notFound();

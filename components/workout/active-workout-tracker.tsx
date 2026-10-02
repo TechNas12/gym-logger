@@ -75,13 +75,27 @@ export function ActiveWorkoutTracker({
   const [startedAt, setStartedAt] = useState<string>(
     initialWorkoutState?.startedAt || new Date().toISOString()
   );
+  const [endedAt, setEndedAt] = useState<string | null>(
+    initialWorkoutState?.endedAt || null
+  );
   const [exercises, setExercises] = useState<ActiveExercise[]>(
     initialWorkoutState?.exercises || []
   );
 
   // Time & Timer
-  const [secondsElapsed, setSecondsElapsed] = useState(0);
-  const [isTimerRunning, setIsTimerRunning] = useState(true);
+  const [secondsElapsed, setSecondsElapsed] = useState(() => {
+    if (initialWorkoutState?.startedAt && initialWorkoutState?.endedAt) {
+      const start = new Date(initialWorkoutState.startedAt).getTime();
+      const end = new Date(initialWorkoutState.endedAt).getTime();
+      if (!isNaN(start) && !isNaN(end) && end >= start) {
+        return Math.floor((end - start) / 1000);
+      }
+    }
+    return 0;
+  });
+  const [isTimerRunning, setIsTimerRunning] = useState(
+    () => !initialWorkoutState?.endedAt
+  );
 
   // Rest Timer (default 90s)
   const [restSecondsRemaining, setRestSecondsRemaining] = useState<number | null>(null);
@@ -162,6 +176,7 @@ export function ActiveWorkoutTracker({
           setRoutineId(parsed.routineId || null);
           setWorkoutId(parsed.workoutId || null);
           setStartedAt(parsed.startedAt || new Date().toISOString());
+          setEndedAt(parsed.endedAt || null);
           setExercises(parsed.exercises);
 
           // Calculate elapsed seconds from startedAt
@@ -188,6 +203,7 @@ export function ActiveWorkoutTracker({
           routineId,
           name,
           startedAt,
+          endedAt,
           notes,
           exercises,
         };
@@ -198,7 +214,7 @@ export function ActiveWorkoutTracker({
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [workoutId, routineId, name, startedAt, notes, exercises]);
+  }, [workoutId, routineId, name, startedAt, endedAt, notes, exercises]);
 
   // 5. Fetch previous performance for exercises
   const fetchPreviousPerformance = useCallback(async (exerciseIds: string[]) => {
@@ -364,10 +380,6 @@ export function ActiveWorkoutTracker({
           sets: ex.sets.map((s) => {
             if (s.clientId === setClientId) {
               const nextState = !s.isCompleted;
-              if (nextState) {
-                // Trigger 90s rest timer on completing set
-                triggerRestTimer(90);
-              }
               return {
                 ...s,
                 isCompleted: nextState,
@@ -487,12 +499,14 @@ export function ActiveWorkoutTracker({
         }
       }
 
+      const finalEndedAt = endedAt || new Date().toISOString();
+
       const payload: SaveWorkoutPayload = {
         id: workoutId,
         routine_id: routineId,
         name: name.trim() || 'Workout',
         started_at: startedAt,
-        ended_at: new Date().toISOString(),
+        ended_at: finalEndedAt,
         notes: notes.trim() || null,
         exercises: exercises.map((ex, exIdx) => ({
           exercise_id: ex.exerciseId,
@@ -518,8 +532,11 @@ export function ActiveWorkoutTracker({
       if (res.success && res.data) {
         sessionStorage.removeItem(STORAGE_KEY);
         setCompletedWorkoutId(res.data.workoutId);
+        const durationSec = startedAt && finalEndedAt
+          ? Math.max(0, Math.floor((new Date(finalEndedAt).getTime() - new Date(startedAt).getTime()) / 1000))
+          : secondsElapsed;
         setSummaryStats({
-          duration: secondsElapsed,
+          duration: durationSec,
           volume: Math.round(totalVolume),
           completedSets: totalCompletedSets,
           prs: prList.slice(0, 3), // highlight top 3

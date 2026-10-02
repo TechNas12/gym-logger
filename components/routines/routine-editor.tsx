@@ -322,10 +322,10 @@ export function RoutineEditor({ initialRoutine }: RoutineEditorProps) {
             clientId: crypto.randomUUID(),
             setNumber: sIdx + 1,
             setType: rs.set_type,
-            targetRepsMin: rs.target_reps_min || 8,
-            targetRepsMax: rs.target_reps_max || 12,
-            targetWeightKg: rs.target_weight_kg ? Number(rs.target_weight_kg) : null,
-            restSec: rs.rest_sec || 90,
+            targetRepsMin: rs.target_reps_min ?? 8,
+            targetRepsMax: rs.target_reps_max ?? 12,
+            targetWeightKg: rs.target_weight_kg != null ? Number(rs.target_weight_kg) : null,
+            restSec: rs.rest_sec ?? 90,
           }))
         : [
             {

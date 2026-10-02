@@ -51,4 +51,10 @@ DROP POLICY IF EXISTS "Sets: user owns" ON public.sets;
 CREATE POLICY "Sets: user owns"
   ON public.sets FOR ALL
   USING (user_id = (SELECT auth.uid()))
-  WITH CHECK (user_id = (SELECT auth.uid()));
+  WITH CHECK (
+    user_id = (SELECT auth.uid())
+    AND EXISTS (
+      SELECT 1 FROM public.workout_exercises we
+      WHERE we.id = workout_exercise_id AND we.user_id = (SELECT auth.uid())
+    )
+  );

@@ -22,4 +22,10 @@ DROP POLICY IF EXISTS "WorkoutExercises: user owns" ON public.workout_exercises;
 CREATE POLICY "WorkoutExercises: user owns"
   ON public.workout_exercises FOR ALL
   USING (user_id = (SELECT auth.uid()))
-  WITH CHECK (user_id = (SELECT auth.uid()));
+  WITH CHECK (
+    user_id = (SELECT auth.uid())
+    AND EXISTS (
+      SELECT 1 FROM public.workouts w
+      WHERE w.id = workout_id AND w.user_id = (SELECT auth.uid())
+    )
+  );

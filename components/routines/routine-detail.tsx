@@ -260,14 +260,14 @@ export function RoutineDetailView({ routine, isOwner }: RoutineDetailViewProps) 
                     </div>
                     <div className="col-span-4 text-center text-text-primary font-semibold">
                       {s.target_reps_min === s.target_reps_max
-                        ? `${s.target_reps_min || 10} reps`
-                        : `${s.target_reps_min || 8} - ${s.target_reps_max || 12} reps`}
+                        ? `${s.target_reps_min ?? 10} reps`
+                        : `${s.target_reps_min ?? 8} - ${s.target_reps_max ?? 12} reps`}
                     </div>
                     <div className="col-span-3 text-center text-text-muted">
-                      {s.target_weight_kg ? `${s.target_weight_kg} kg` : '—'}
+                      {s.target_weight_kg != null ? `${s.target_weight_kg} kg` : '—'}
                     </div>
                     <div className="col-span-3 text-center text-text-subtle">
-                      {s.rest_sec ? `${s.rest_sec}s` : '90s'}
+                      {s.rest_sec != null ? `${s.rest_sec}s` : '90s'}
                     </div>
                   </div>
                 ))}

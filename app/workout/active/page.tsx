@@ -101,8 +101,8 @@ export default async function ActiveWorkoutPage({
               clientId: crypto.randomUUID(),
               setNumber: ps.set_number,
               setType: ps.set_type,
-              reps: ps.target_reps_max || ps.target_reps_min || 10,
-              weightKg: ps.target_weight_kg ? Number(ps.target_weight_kg) : null,
+              reps: ps.target_reps_max ?? ps.target_reps_min ?? 10,
+              weightKg: ps.target_weight_kg != null ? Number(ps.target_weight_kg) : null,
               isCompleted: false,
               previous: prevText,
             };

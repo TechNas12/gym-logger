@@ -167,14 +167,87 @@ export async function getWorkoutHistoryAction(params?: {
       return { success: false, error: error.message };
     }
 
+    // Collect all exercise IDs to query historical bests
+    const allExerciseIds = Array.from(
+      new Set(
+        (workoutsData || []).flatMap((w: any) =>
+          (w.workout_exercises || []).map((we: any) => we.exercise_id)
+        )
+      )
+    );
+
+    const historicalByExercise = new Map<
+      string,
+      Array<{ workoutId: string; startedAtMs: number; est1rmKg: number }>
+    >();
+
+    if (allExerciseIds.length > 0) {
+      const { data: histData, error: histError } = await supabase
+        .from('sets')
+        .select(`
+          exercise_id,
+          est_1rm_kg,
+          workout_exercise:workout_exercises!inner (
+            workout:workouts!inner (
+              id,
+              started_at
+            )
+          )
+        `)
+        .eq('user_id', user.id)
+        .eq('is_completed', true)
+        .not('est_1rm_kg', 'is', null)
+        .in('exercise_id', allExerciseIds);
+
+      if (!histError && histData) {
+        for (const s of histData) {
+          if (s.est_1rm_kg === null || s.est_1rm_kg === undefined) continue;
+          const we: any = Array.isArray(s.workout_exercise)
+            ? s.workout_exercise[0]
+            : s.workout_exercise;
+          const w: any = Array.isArray(we?.workout)
+            ? we?.workout[0]
+            : we?.workout;
+
+          if (w?.id && w?.started_at) {
+            const startedAtMs = new Date(w.started_at).getTime();
+            if (!isNaN(startedAtMs)) {
+              const list = historicalByExercise.get(s.exercise_id) || [];
+              list.push({
+                workoutId: w.id,
+                startedAtMs,
+                est1rmKg: Number(s.est_1rm_kg),
+              });
+              historicalByExercise.set(s.exercise_id, list);
+            }
+          }
+        }
+      }
+    }
+
     // Compute aggregations in application layer
     const summaries: WorkoutSummary[] = (workoutsData || []).map((w: any) => {
       let totalVolumeKg = 0;
       let completedSetsCount = 0;
       let prsCount = 0;
 
+      const wStartMs = w.started_at ? new Date(w.started_at).getTime() : NaN;
       const exercises = w.workout_exercises || [];
+
       for (const we of exercises) {
+        // Calculate user's best for this exercise before this workout's started_at
+        let earlierBest: number | null = null;
+        if (!isNaN(wStartMs)) {
+          const priorList = historicalByExercise.get(we.exercise_id) || [];
+          for (const item of priorList) {
+            if (item.workoutId !== w.id && item.startedAtMs < wStartMs) {
+              if (earlierBest === null || item.est1rmKg > earlierBest) {
+                earlierBest = item.est1rmKg;
+              }
+            }
+          }
+        }
+
         const sets = we.sets || [];
         for (const s of sets) {
           if (s.is_completed) {
@@ -183,7 +256,11 @@ export async function getWorkoutHistoryAction(params?: {
             if (s.set_type !== 'warmup' && s.weight_kg && s.reps) {
               totalVolumeKg += Number(s.weight_kg) * Number(s.reps);
             }
-            if (s.est_1rm_kg) {
+            if (
+              s.est_1rm_kg &&
+              earlierBest !== null &&
+              Number(s.est_1rm_kg) > earlierBest
+            ) {
               prsCount++;
             }
           }
@@ -273,28 +350,94 @@ export async function getWorkoutDetailAction(
         sets: (we.sets || []).sort((a: any, b: any) => a.set_number - b.set_number),
       }));
 
+    // Find the user's best est_1rm_kg for each exercise prior to this workout's started_at
+    const exerciseIds = sortedExercises.map((we: any) => we.exercise_id);
+    const earlierBestMap = new Map<string, number>();
+
+    if (exerciseIds.length > 0 && workout.started_at) {
+      const workoutStartTime = new Date(workout.started_at).getTime();
+
+      if (!isNaN(workoutStartTime)) {
+        const { data: priorSetsData, error: priorError } = await supabase
+          .from('sets')
+          .select(`
+            exercise_id,
+            est_1rm_kg,
+            workout_exercise:workout_exercises!inner (
+              workout:workouts!inner (
+                id,
+                started_at
+              )
+            )
+          `)
+          .eq('user_id', user.id)
+          .eq('is_completed', true)
+          .not('est_1rm_kg', 'is', null)
+          .in('exercise_id', exerciseIds);
+
+        if (!priorError && priorSetsData) {
+          for (const s of priorSetsData) {
+            const we: any = Array.isArray(s.workout_exercise)
+              ? s.workout_exercise[0]
+              : s.workout_exercise;
+            const w: any = Array.isArray(we?.workout)
+              ? we?.workout[0]
+              : we?.workout;
+
+            if (w?.id && w.id !== workout.id && w.started_at) {
+              const priorStartTime = new Date(w.started_at).getTime();
+              if (priorStartTime < workoutStartTime && s.est_1rm_kg !== null) {
+                const val = Number(s.est_1rm_kg);
+                const currentMax = earlierBestMap.get(s.exercise_id);
+                if (currentMax === undefined || val > currentMax) {
+                  earlierBestMap.set(s.exercise_id, val);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
     let totalVolumeKg = 0;
     let completedSetsCount = 0;
-    const prs: { exerciseName: string; weightKg: number; reps: number; est1rmKg: number }[] = [];
+    const prsByExercise = new Map<
+      string,
+      { exerciseName: string; weightKg: number; reps: number; est1rmKg: number }
+    >();
 
     for (const we of sortedExercises) {
+      const earlierBest = earlierBestMap.get(we.exercise_id);
+
       for (const s of we.sets) {
         if (s.is_completed) {
           completedSetsCount++;
           if (s.set_type !== 'warmup' && s.weight_kg && s.reps) {
             totalVolumeKg += Number(s.weight_kg) * Number(s.reps);
           }
-          if (s.est_1rm_kg && we.exercise) {
-            prs.push({
-              exerciseName: we.exercise.name,
-              weightKg: Number(s.weight_kg),
-              reps: Number(s.reps),
-              est1rmKg: Number(s.est_1rm_kg),
-            });
+          if (
+            s.est_1rm_kg &&
+            we.exercise &&
+            earlierBest !== undefined &&
+            earlierBest !== null &&
+            Number(s.est_1rm_kg) > earlierBest
+          ) {
+            const currentEst1rm = Number(s.est_1rm_kg);
+            const existing = prsByExercise.get(we.exercise_id);
+            if (!existing || currentEst1rm > existing.est1rmKg) {
+              prsByExercise.set(we.exercise_id, {
+                exerciseName: we.exercise.name,
+                weightKg: Number(s.weight_kg),
+                reps: Number(s.reps),
+                est1rmKg: currentEst1rm,
+              });
+            }
           }
         }
       }
     }
+
+    const prs = Array.from(prsByExercise.values());
 
     let durationSeconds = 0;
     if (workout.started_at && workout.ended_at) {

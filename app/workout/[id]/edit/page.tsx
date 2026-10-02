@@ -77,6 +77,7 @@ export default async function EditWorkoutPage({ params }: EditWorkoutPageProps) 
     routineId: workout.routine_id,
     name: workout.name,
     startedAt: workout.started_at,
+    endedAt: workout.ended_at,
     notes: workout.notes || '',
     exercises: mappedExercises,
   };

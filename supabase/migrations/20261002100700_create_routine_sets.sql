@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS public.routine_sets (
   id                    uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   routine_exercise_id   uuid NOT NULL REFERENCES public.routine_exercises(id) ON DELETE CASCADE,
-  user_id               uuid NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  user_id               uuid REFERENCES public.users(id) ON DELETE CASCADE,
   set_number            smallint NOT NULL,
   set_type              text NOT NULL DEFAULT 'normal',
   target_reps_min       smallint,
@@ -20,6 +20,9 @@ CREATE TABLE IF NOT EXISTS public.routine_sets (
   CONSTRAINT uq_routine_sets_number
     UNIQUE (routine_exercise_id, set_number)
 );
+
+ALTER TABLE public.routine_sets
+  ALTER COLUMN user_id DROP NOT NULL;
 
 ALTER TABLE public.routine_sets ENABLE ROW LEVEL SECURITY;
 
@@ -39,16 +42,16 @@ DROP POLICY IF EXISTS "RoutineSets: write own" ON public.routine_sets;
 CREATE POLICY "RoutineSets: write own"
   ON public.routine_sets FOR ALL
   USING (
-    user_id = (SELECT auth.uid())
-    OR EXISTS (
+    EXISTS (
       SELECT 1 FROM public.routine_exercises re
-      WHERE re.id = routine_exercise_id AND re.user_id = (SELECT auth.uid())
+      JOIN public.routines r ON r.id = re.routine_id
+      WHERE re.id = routine_exercise_id AND r.user_id = (SELECT auth.uid())
     )
   )
   WITH CHECK (
-    user_id = (SELECT auth.uid())
-    OR EXISTS (
+    EXISTS (
       SELECT 1 FROM public.routine_exercises re
-      WHERE re.id = routine_exercise_id AND re.user_id = (SELECT auth.uid())
+      JOIN public.routines r ON r.id = re.routine_id
+      WHERE re.id = routine_exercise_id AND r.user_id = (SELECT auth.uid())
     )
   );

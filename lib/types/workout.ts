@@ -91,7 +91,7 @@ export interface DbRoutineExercise {
 export interface DbRoutineSet {
   id: string;
   routine_exercise_id: string;
-  user_id: string;
+  user_id: string | null;
   set_number: number;
   set_type: SetType;
   target_reps_min: number | null;
@@ -186,6 +186,7 @@ export interface ActiveWorkoutState {
   routineId: string | null;
   name: string;
   startedAt: string;
+  endedAt?: string | null;
   notes: string;
   exercises: ActiveExercise[];
 }

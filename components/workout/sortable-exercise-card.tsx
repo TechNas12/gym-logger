@@ -96,10 +96,10 @@ export function SortableExerciseCard({
     opacity: isDragging ? 0.6 : 1,
   };
 
-  const handleSetCompletion = (setClientId: string) => {
+  const handleSetCompletion = (setClientId: string, priorIsCompleted: boolean) => {
     onToggleComplete(exercise.clientId, setClientId);
-    // If rest duration is configured and greater than 0, trigger rest timer
-    if (restDuration > 0 && onTriggerRestTimer) {
+    // If set was incomplete and is now being completed, trigger rest timer if restDuration > 0
+    if (!priorIsCompleted && restDuration > 0 && onTriggerRestTimer) {
       onTriggerRestTimer(restDuration);
     }
   };
@@ -383,7 +383,7 @@ export function SortableExerciseCard({
               <div className="flex items-center justify-center relative">
                 <button
                   type="button"
-                  onClick={() => handleSetCompletion(set.clientId)}
+                  onClick={() => handleSetCompletion(set.clientId, isCompleted)}
                   className={`w-9 h-8 sm:w-10 sm:h-8.5 rounded-lg flex items-center justify-center transition-all cursor-pointer active:scale-90 select-none ${
                     isCompleted
                       ? 'bg-[#34c759] text-white shadow-sm'
