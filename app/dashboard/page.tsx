@@ -8,12 +8,15 @@ import {
   Settings,
   Scale,
   Sparkles,
+  TrendingUp,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { SignOutButton } from '@/components/auth/sign-out-button';
 import { WorkoutHub } from '@/components/dashboard/workout-hub';
+import { AnalyticsKpiWidget } from '@/components/dashboard/analytics-kpi-widget';
 import { WorkoutCard } from '@/components/workout/history/workout-card';
 import { getWorkoutHistoryAction } from '@/app/workout/actions';
+import { getDashboardAnalyticsKpiAction } from '@/app/analytics/actions';
 import {
   ACTIVITY_LEVEL_DETAILS,
   FITNESS_GOAL_DETAILS,
@@ -54,6 +57,23 @@ export default async function DashboardPage() {
   const historyRes = await getWorkoutHistoryAction({ limit: 2 });
   const recentWorkouts = historyRes.success && historyRes.data ? historyRes.data : [];
 
+  // Fetch training analytics KPI for dashboard glimpse
+  const kpiRes = await getDashboardAnalyticsKpiAction();
+  const analyticsKpi =
+    kpiRes.success && kpiRes.data
+      ? kpiRes.data
+      : {
+          hasWorkouts: false,
+          thisWeekVolumeKg: 0,
+          volumeChangePercent: null,
+          thisWeekWorkoutsCount: 0,
+          currentStreakWeeks: 0,
+          topMuscleGroup: null,
+          topMusclePercentage: null,
+          latestPr: null,
+          sparkline: [],
+        };
+
   const goal = (profile.fitness_goal as FitnessGoal) || 'maintain';
   const goalDetails = FITNESS_GOAL_DETAILS[goal];
 
@@ -82,7 +102,14 @@ export default async function DashboardPage() {
           </span>
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Link
+            href="/analytics"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-raised border border-border/80 hover:bg-surface-hover text-emerald-400 text-xs font-semibold focus-ring transition-colors cursor-pointer min-h-[36px]"
+          >
+            <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="hidden sm:inline">Analytics</span>
+          </Link>
           <Link
             href="/onboarding?edit=true"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-raised border border-border/80 hover:bg-surface-hover text-text-primary text-xs font-semibold focus-ring transition-colors cursor-pointer min-h-[36px]"
@@ -170,6 +197,9 @@ export default async function DashboardPage() {
 
         {/* Workout Tracker Entry Section (Start Workout & Start Routine) */}
         <WorkoutHub userName={firstName} />
+
+        {/* Training Analytics KPI Placement (Glimpse of Analytics) */}
+        <AnalyticsKpiWidget kpi={analyticsKpi} />
 
         {/* Recent Workouts Activity (if any) */}
         {recentWorkouts.length > 0 && (

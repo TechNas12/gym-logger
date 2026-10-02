@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { getWorkoutHistoryAction } from '@/app/workout/actions';
 import { WorkoutCard } from '@/components/workout/history/workout-card';
-import { ArrowLeft, Plus, History, Dumbbell } from 'lucide-react';
+import { ArrowLeft, Plus, History, Dumbbell, TrendingUp } from 'lucide-react';
 
 export const metadata = {
   title: 'Workout History | GymLogger',
@@ -36,13 +36,23 @@ export default async function WorkoutHistoryPage() {
             <span>Dashboard</span>
           </Link>
 
-          <Link
-            href="/workout/active"
-            className="min-h-[38px] px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm active:scale-[0.98] transition-colors flex items-center gap-1.5 cursor-pointer"
-          >
-            <Plus className="w-4 h-4 stroke-[2.5]" />
-            <span>Start Workout</span>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/analytics"
+              className="min-h-[38px] px-3.5 rounded-xl bg-surface-raised border border-border hover:bg-surface-hover text-emerald-400 font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+            >
+              <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Analytics</span>
+            </Link>
+
+            <Link
+              href="/workout/active"
+              className="min-h-[38px] px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm active:scale-[0.98] transition-colors flex items-center gap-1.5 cursor-pointer"
+            >
+              <Plus className="w-4 h-4 stroke-[2.5]" />
+              <span>Start Workout</span>
+            </Link>
+          </div>
         </div>
       </header>
 

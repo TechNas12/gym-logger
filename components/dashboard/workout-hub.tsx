@@ -11,6 +11,7 @@ import {
   ArrowRight,
   History,
   Sparkles,
+  TrendingUp,
 } from 'lucide-react';
 import { RoutinePickerModal } from '@/components/workout/routine-picker-modal';
 
@@ -46,13 +47,21 @@ export function WorkoutHub({ userName }: WorkoutHubProps) {
           </div>
         </div>
 
-        {/* Quick links to History and Routines */}
-        <div className="flex items-center gap-2">
+        {/* Quick links to Analytics, History and Routines */}
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+          <Link
+            href="/analytics"
+            className="flex items-center gap-1.5 text-xs font-semibold text-text-muted hover:text-text-primary bg-surface-raised hover:bg-surface-hover px-3 py-1.5 rounded-xl border border-border/70 transition-colors"
+          >
+            <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Analytics</span>
+          </Link>
+
           <Link
             href="/workout/history"
             className="flex items-center gap-1.5 text-xs font-semibold text-text-muted hover:text-text-primary bg-surface-raised hover:bg-surface-hover px-3 py-1.5 rounded-xl border border-border/70 transition-colors"
           >
-            <History className="w-3.5 h-3.5 text-emerald-400" />
+            <History className="w-3.5 h-3.5 text-blue-400" />
             <span>History</span>
           </Link>
 
@@ -60,7 +69,7 @@ export function WorkoutHub({ userName }: WorkoutHubProps) {
             href="/routines"
             className="flex items-center gap-1.5 text-xs font-semibold text-text-muted hover:text-text-primary bg-surface-raised hover:bg-surface-hover px-3 py-1.5 rounded-xl border border-border/70 transition-colors"
           >
-            <Layers className="w-3.5 h-3.5 text-blue-400" />
+            <Layers className="w-3.5 h-3.5 text-purple-400" />
             <span>Routines</span>
           </Link>
         </div>
