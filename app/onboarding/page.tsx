@@ -60,20 +60,10 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
 
   return (
     <main className="min-h-screen bg-background selection:bg-accent/30 selection:text-text-primary flex flex-col justify-between p-4 sm:p-6 lg:p-10 relative overflow-x-hidden">
-      {/* Ambient background glow accents */}
-      <div
-        className="absolute -top-32 -left-32 w-96 h-96 bg-accent/10 blur-[130px] rounded-full pointer-events-none"
-        aria-hidden="true"
-      />
-      <div
-        className="absolute -bottom-32 -right-32 w-96 h-96 bg-emerald-500/10 blur-[140px] rounded-full pointer-events-none"
-        aria-hidden="true"
-      />
-
       {/* Top Navbar */}
       <header className="w-full max-w-2xl mx-auto flex items-center justify-between pb-4 sm:pb-6 relative z-10">
         <Link href="/" className="flex items-center gap-2.5 group cursor-pointer">
-          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-accent/20 border border-accent/40 text-accent group-hover:scale-105 group-hover:border-accent group-hover:shadow-[0_0_20px_rgba(34,197,94,0.35)] transition-all duration-200">
+          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-surface-raised border border-border text-accent group-hover:border-accent/60 transition-colors">
             <Dumbbell className="w-4 h-4 text-accent" />
           </div>
           <span className="text-base sm:text-lg font-bold tracking-tight text-text-primary">
@@ -100,12 +90,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
 
       {/* Centered Main Wizard Card */}
       <section className="w-full max-w-2xl mx-auto my-auto relative z-10 py-2 sm:py-6">
-        <div className="relative rounded-3xl bg-surface/90 border border-border/90 shadow-2xl p-5 sm:p-8 lg:p-9 backdrop-blur-xl">
-          {/* Subtle green glow accent top line */}
-          <div
-            className="absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-90"
-            aria-hidden="true"
-          />
+        <div className="relative rounded-3xl bg-surface border border-border p-5 sm:p-8 lg:p-9">
 
           {/* Card Header */}
           <div className="mb-6 text-left">

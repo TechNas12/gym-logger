@@ -12,6 +12,8 @@ import {
 import { createClient } from '@/lib/supabase/server';
 import { SignOutButton } from '@/components/auth/sign-out-button';
 import { WorkoutHub } from '@/components/dashboard/workout-hub';
+import { WorkoutCard } from '@/components/workout/history/workout-card';
+import { getWorkoutHistoryAction } from '@/app/workout/actions';
 import {
   ACTIVITY_LEVEL_DETAILS,
   FITNESS_GOAL_DETAILS,
@@ -48,6 +50,10 @@ export default async function DashboardPage() {
 
   const firstName = profile?.first_name || user.user_metadata?.first_name || 'Athlete';
 
+  // Fetch recent workouts for dashboard display
+  const historyRes = await getWorkoutHistoryAction({ limit: 2 });
+  const recentWorkouts = historyRes.success && historyRes.data ? historyRes.data : [];
+
   const goal = (profile.fitness_goal as FitnessGoal) || 'maintain';
   const goalDetails = FITNESS_GOAL_DETAILS[goal];
 
@@ -68,7 +74,7 @@ export default async function DashboardPage() {
       {/* Top Bar */}
       <header className="w-full max-w-4xl mx-auto flex items-center justify-between pb-6 border-b border-border/60">
         <Link href="/" className="flex items-center gap-2.5 group cursor-pointer">
-          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-accent/20 border border-accent/40 text-accent group-hover:scale-105 group-hover:border-accent group-hover:shadow-[0_0_20px_rgba(34,197,94,0.35)] transition-all duration-200">
+          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-surface-raised border border-border text-accent group-hover:border-accent/60 transition-colors">
             <Dumbbell className="w-4 h-4 text-accent" />
           </div>
           <span className="text-base sm:text-lg font-bold tracking-tight text-text-primary">
@@ -92,16 +98,10 @@ export default async function DashboardPage() {
       {/* Main Content Area */}
       <div className="w-full max-w-4xl mx-auto my-auto py-6 sm:py-8 space-y-6">
         {/* Welcome Banner Card */}
-        <div className="relative rounded-3xl bg-surface/90 border border-border/90 shadow-2xl p-6 sm:p-8 backdrop-blur-xl">
-          {/* Subtle green glow accent */}
-          <div
-            className="absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-90"
-            aria-hidden="true"
-          />
-
+        <div className="relative rounded-3xl bg-surface border border-border p-6 sm:p-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-border/70">
             <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-accent/20 border border-accent/40 text-accent flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.25)] shrink-0">
+              <div className="w-12 h-12 rounded-2xl bg-surface-raised border border-border text-emerald-400 flex items-center justify-center shrink-0">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <div>
@@ -171,26 +171,51 @@ export default async function DashboardPage() {
         {/* Workout Tracker Entry Section (Start Workout & Start Routine) */}
         <WorkoutHub userName={firstName} />
 
+        {/* Recent Workouts Activity (if any) */}
+        {recentWorkouts.length > 0 && (
+          <section className="space-y-3">
+            <div className="flex items-center justify-between px-1">
+              <div className="flex items-center gap-2">
+                <Dumbbell className="w-4 h-4 text-accent" />
+                <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider">
+                  Recent Workouts
+                </h2>
+              </div>
+              <Link
+                href="/workout/history"
+                className="text-xs font-semibold text-accent hover:underline"
+              >
+                View All History →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {recentWorkouts.map((w) => (
+                <WorkoutCard key={w.id} workout={w} />
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Daily Targets & Calorie Breakdown Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Main Daily Calorie Target Card */}
-          <div className="sm:col-span-1 rounded-3xl bg-accent/10 border border-accent/40 shadow-[0_0_30px_rgba(34,197,94,0.18)] p-6 flex flex-col justify-between">
+          <div className="sm:col-span-1 rounded-3xl bg-surface border border-border p-6 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-1.5 text-accent">
                   <Target className="w-4 h-4" />
                   <span className="text-xs uppercase tracking-wider font-bold">Daily Target</span>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-accent/20 text-accent font-bold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-surface-raised border border-border text-emerald-400 font-bold">
                   {adjustment > 0 ? `+${adjustment}` : adjustment < 0 ? `${adjustment}` : 'Balance'}
                 </span>
               </div>
 
               <div className="mt-4 flex items-baseline gap-1.5">
-                <span className="text-4xl sm:text-5xl font-black font-mono text-accent">
+                <span className="text-4xl sm:text-5xl font-black font-mono text-emerald-400">
                   {targetCalories ? targetCalories.toLocaleString() : '—'}
                 </span>
-                <span className="text-sm font-semibold text-accent/80">kcal / day</span>
+                <span className="text-sm font-semibold text-text-muted">kcal / day</span>
               </div>
 
               <p className="mt-2 text-xs text-text-muted leading-relaxed">
@@ -202,7 +227,7 @@ export default async function DashboardPage() {
               </p>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-accent/20 space-y-1.5 text-xs">
+            <div className="mt-6 pt-4 border-t border-border/60 space-y-1.5 text-xs">
               <div className="flex justify-between text-text-muted">
                 <span>Basal Rate (BMR):</span>
                 <span className="font-mono text-text-primary font-semibold">
@@ -219,7 +244,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Daily Macros Card */}
-          <div className="sm:col-span-2 rounded-3xl bg-surface/90 border border-border/90 shadow-2xl p-6 flex flex-col justify-between backdrop-blur-xl">
+          <div className="sm:col-span-2 rounded-3xl bg-surface border border-border p-6 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">

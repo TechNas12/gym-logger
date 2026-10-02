@@ -33,7 +33,7 @@ export function StepIndicator({
         {/* Progress bar line */}
         <div className="h-1.5 w-full bg-surface-raised rounded-full overflow-hidden border border-border/60">
           <div
-            className="h-full bg-accent transition-all duration-300 ease-out shadow-[0_0_12px_rgba(34,197,94,0.6)]"
+            className="h-full bg-emerald-600 transition-all duration-300 ease-out"
             style={{ width: `${(currentStep / totalSteps) * 100}%` }}
           />
         </div>
@@ -58,9 +58,9 @@ export function StepIndicator({
                   <div
                     className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 border ${
                       isCompleted
-                        ? 'bg-accent border-accent text-accent-foreground shadow-[0_0_16px_rgba(34,197,94,0.4)]'
+                        ? 'bg-emerald-600 border-emerald-600 text-white'
                         : isCurrent
-                        ? 'bg-surface border-accent text-accent ring-4 ring-accent/20 shadow-[0_0_20px_rgba(34,197,94,0.3)]'
+                        ? 'bg-surface border-emerald-500 text-emerald-400 ring-2 ring-emerald-500/20'
                         : 'bg-surface-raised border-border text-text-subtle'
                     }`}
                   >

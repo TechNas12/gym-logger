@@ -227,7 +227,7 @@ export function LoginForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="w-full min-h-[48px] inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-accent text-accent-foreground font-bold text-sm sm:text-base hover:bg-accent-hover active:bg-accent-active active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus-ring shadow-[0_0_25px_rgba(34,197,94,0.35)] hover:shadow-[0_0_35px_rgba(34,197,94,0.5)] cursor-pointer group"
+          className="w-full min-h-[48px] inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-emerald-600 text-white font-bold text-sm sm:text-base hover:bg-emerald-500 active:bg-emerald-700 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus-ring shadow-sm cursor-pointer group"
         >
           {isPending ? (
             <>

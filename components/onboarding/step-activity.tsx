@@ -151,7 +151,7 @@ export function StepActivity({
                 }}
                 className={`flex items-start gap-3 p-3.5 rounded-2xl border text-left transition-all duration-200 cursor-pointer min-h-[64px] focus-ring relative ${
                   isSelected
-                    ? 'bg-accent/15 border-accent shadow-[0_0_20px_rgba(34,197,94,0.2)]'
+                    ? 'bg-accent/15 border-accent'
                     : 'bg-surface-raised border-border/80 hover:border-border hover:bg-surface-hover'
                 }`}
               >
@@ -218,7 +218,7 @@ export function StepActivity({
                 onClick={() => handleGoalChange(item.id)}
                 className={`flex flex-col justify-between p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer min-h-[110px] focus-ring relative ${
                   isSelected
-                    ? 'bg-accent/15 border-accent shadow-[0_0_20px_rgba(34,197,94,0.2)]'
+                    ? 'bg-accent/15 border-accent'
                     : 'bg-surface-raised border-border/80 hover:border-border hover:bg-surface-hover'
                 }`}
               >
@@ -292,7 +292,7 @@ export function StepActivity({
                   onClick={() => onChange({ weeklyGoalRateKg: rate.rateKg })}
                   className={`p-3.5 rounded-2xl border text-left transition-all duration-200 cursor-pointer focus-ring relative ${
                     isSelected
-                      ? 'bg-amber-500/15 border-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.2)]'
+                      ? 'bg-amber-500/15 border-amber-500'
                       : 'bg-surface-raised border-border/80 hover:border-border hover:bg-surface-hover'
                   }`}
                 >
@@ -344,7 +344,7 @@ export function StepActivity({
                   onClick={() => onChange({ weeklyGoalRateKg: rate.rateKg })}
                   className={`p-3.5 rounded-2xl border text-left transition-all duration-200 cursor-pointer focus-ring relative ${
                     isSelected
-                      ? 'bg-accent/15 border-accent shadow-[0_0_20px_rgba(34,197,94,0.2)]'
+                      ? 'bg-accent/15 border-accent'
                       : 'bg-surface-raised border-border/80 hover:border-border hover:bg-surface-hover'
                   }`}
                 >
@@ -400,7 +400,7 @@ export function StepActivity({
 
         <button
           type="submit"
-          className="flex-[2] min-h-[48px] inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-accent text-accent-foreground font-bold text-xs sm:text-sm hover:bg-accent-hover active:bg-accent-active active:scale-[0.99] transition-all duration-200 focus-ring shadow-[0_0_25px_rgba(34,197,94,0.35)] hover:shadow-[0_0_35px_rgba(34,197,94,0.5)] cursor-pointer group"
+          className="flex-[2] min-h-[48px] inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm active:scale-[0.99] transition-colors duration-200 focus-ring shadow-sm cursor-pointer group"
         >
           <span>Calculate My Targets</span>
           <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />

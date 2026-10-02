@@ -183,7 +183,7 @@ export function RegisterForm() {
   if (needsEmailConfirmation) {
     return (
       <div className="text-center py-4 space-y-5 animate-in fade-in zoom-in-95 duration-200">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-accent/20 border border-accent/40 text-accent shadow-[0_0_30px_rgba(34,197,94,0.35)] mx-auto">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-surface-raised border border-border text-emerald-400 mx-auto">
           <MailCheck className="w-8 h-8" aria-hidden="true" />
         </div>
 
@@ -520,7 +520,7 @@ export function RegisterForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="w-full min-h-[48px] inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-accent text-accent-foreground font-bold text-sm sm:text-base hover:bg-accent-hover active:bg-accent-active active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus-ring shadow-[0_0_25px_rgba(34,197,94,0.35)] hover:shadow-[0_0_35px_rgba(34,197,94,0.5)] cursor-pointer group"
+          className="w-full min-h-[48px] inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-emerald-600 text-white font-bold text-sm sm:text-base hover:bg-emerald-500 active:bg-emerald-700 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus-ring shadow-sm cursor-pointer group"
         >
           {isPending ? (
             <>

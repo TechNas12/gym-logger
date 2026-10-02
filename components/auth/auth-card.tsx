@@ -41,24 +41,14 @@ export function AuthCard({
   return (
     <div className="w-full min-h-screen flex flex-col lg:flex-row bg-background selection:bg-accent/30 selection:text-text-primary">
       {/* LEFT SHOWCASE PANEL (Visible on lg screens) */}
-      <div className="hidden lg:flex lg:w-1/2 xl:w-5/12 relative flex-col justify-between p-10 xl:p-14 bg-gradient-to-br from-surface-raised via-surface to-[#0c130e] border-r border-border/80 overflow-hidden">
-        {/* Ambient Glows */}
-        <div 
-          className="absolute -top-24 -left-24 w-96 h-96 bg-accent/15 blur-[120px] rounded-full pointer-events-none"
-          aria-hidden="true" 
-        />
-        <div 
-          className="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-500/10 blur-[130px] rounded-full pointer-events-none"
-          aria-hidden="true" 
-        />
-
+      <div className="hidden lg:flex lg:w-1/2 xl:w-5/12 relative flex-col justify-between p-10 xl:p-14 bg-surface border-r border-border overflow-hidden">
         {/* Brand Top Bar */}
         <div className="relative z-10 flex items-center justify-between">
           <Link
             href="/"
             className="flex items-center gap-2.5 group cursor-pointer"
           >
-            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-accent/20 border border-accent/40 text-accent group-hover:scale-105 group-hover:border-accent group-hover:shadow-[0_0_20px_rgba(34,197,94,0.35)] transition-all duration-200">
+            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-surface-raised border border-border text-accent group-hover:border-accent/60 transition-colors">
               <Dumbbell className="w-5 h-5 text-accent" />
             </div>
             <div className="flex flex-col">
@@ -221,16 +211,10 @@ export function AuthCard({
 
         {/* Center Card Content */}
         <div className="my-auto w-full max-w-[460px] mx-auto py-4">
-          <div className="relative rounded-3xl bg-surface/90 border border-border/90 shadow-2xl p-6 sm:p-9 backdrop-blur-xl transition-all">
-            {/* Ambient accent top highlight line */}
-            <div
-              className="absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-90"
-              aria-hidden="true"
-            />
-
+          <div className="relative rounded-3xl bg-surface border border-border p-6 sm:p-9 transition-all">
             {/* Header */}
             <div className="mb-6 text-left">
-              <div className="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-accent/15 border border-accent/30 text-accent mb-4 shadow-[0_0_20px_rgba(34,197,94,0.25)]">
+              <div className="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-surface-raised border border-border text-emerald-400 mb-4">
                 {isLogin ? <Zap className="w-5 h-5" /> : <Dumbbell className="w-5 h-5" />}
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-text-primary">

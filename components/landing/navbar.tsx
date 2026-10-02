@@ -41,7 +41,7 @@ export function Navbar() {
             href="/"
             className="flex items-center gap-2 sm:gap-2.5 group cursor-pointer shrink-0 min-h-[44px]"
           >
-            <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-accent/20 to-emerald-500/10 border border-accent/40 text-accent group-hover:scale-105 group-hover:border-accent group-hover:shadow-[0_0_20px_rgba(34,197,94,0.35)] transition-all duration-200">
+            <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-surface-raised border border-border text-accent group-hover:border-accent/60 transition-colors">
               <Dumbbell className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
             </div>
             <div className="flex flex-col">
@@ -111,7 +111,7 @@ export function Navbar() {
 
             <Link
               href="/register"
-              className="relative inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl bg-accent text-accent-foreground hover:bg-accent-hover shadow-[0_0_24px_rgba(34,197,94,0.35)] hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] transition-all duration-200 cursor-pointer group whitespace-nowrap min-h-[44px]"
+              className="relative inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white transition-colors duration-200 cursor-pointer group whitespace-nowrap min-h-[44px]"
             >
               <span>Register Now</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-200" />

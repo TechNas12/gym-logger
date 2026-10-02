@@ -18,15 +18,8 @@ import { ScrollReveal } from './scroll-reveal';
 export function Hero() {
   return (
     <section className="relative overflow-hidden pt-12 pb-20 sm:pt-20 sm:pb-28">
-      {/* Background glowing gradients */}
-      <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[900px] h-[450px] bg-gradient-to-tr from-accent/20 via-emerald-500/10 to-orange-500/10 blur-[130px] rounded-full pointer-events-none -z-10 animate-pulse duration-1000"
-        aria-hidden="true"
-      />
-      <div 
-        className="absolute top-10 right-10 w-72 h-72 bg-accent/15 blur-[100px] rounded-full pointer-events-none -z-10"
-        aria-hidden="true"
-      />
+
+
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Release / FOSS Pill Banner */}
@@ -67,7 +60,7 @@ export function Hero() {
             {/* Primary CTA: Register Now */}
             <Link
               href="/register"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-accent text-accent-foreground font-bold text-sm sm:text-base shadow-[0_0_30px_rgba(34,197,94,0.4)] hover:shadow-[0_0_40px_rgba(34,197,94,0.6)] hover:bg-accent-hover transition-all duration-200 cursor-pointer group"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base transition-colors duration-200 cursor-pointer group"
             >
               <span>Register Now — 100% Free & Ad-Free</span>
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-200" />
