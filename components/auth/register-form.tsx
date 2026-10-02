@@ -61,7 +61,7 @@ export function RegisterForm() {
         options: {
           emailRedirectTo:
             typeof window !== 'undefined'
-              ? `${window.location.origin}/auth/callback?next=/login-success`
+              ? `${window.location.origin}/auth/callback?next=/dashboard`
               : undefined,
         },
       });
@@ -128,7 +128,7 @@ export function RegisterForm() {
         options: {
           emailRedirectTo:
             typeof window !== 'undefined'
-              ? `${window.location.origin}/auth/callback?next=/login-success`
+              ? `${window.location.origin}/auth/callback?next=/dashboard`
               : undefined,
           data: {
             first_name: parsed.data.firstName,
@@ -168,7 +168,7 @@ export function RegisterForm() {
 
       // If email confirmation is disabled on the project, Supabase returns session immediately
       if (data.session) {
-        router.push('/login-success');
+        router.push('/dashboard');
         router.refresh();
       }
     } catch (err) {

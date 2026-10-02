@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
 
-export default function LoginSuccessPage() {
+export default function WorkoutPage() {
   redirect('/dashboard');
 }

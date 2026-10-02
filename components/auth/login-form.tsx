@@ -38,7 +38,7 @@ export function LoginForm() {
         options: {
           emailRedirectTo:
             typeof window !== 'undefined'
-              ? `${window.location.origin}/auth/callback?next=/login-success`
+              ? `${window.location.origin}/auth/callback?next=/dashboard`
               : undefined,
         },
       });
@@ -97,7 +97,7 @@ export function LoginForm() {
       }
 
       if (data.session) {
-        const destination = getSafeRedirectUrl(nextParam, '/login-success');
+        const destination = getSafeRedirectUrl(nextParam, '/dashboard');
         router.push(destination);
         router.refresh();
       }

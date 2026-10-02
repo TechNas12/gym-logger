@@ -17,13 +17,17 @@ export function ScrollReveal({
   direction = 'up',
   threshold = 0.02,
 }: ScrollRevealProps) {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return true;
+    }
+    return false;
+  });
   const domRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Check if prefers-reduced-motion is active
+    // Skip observer if prefers-reduced-motion is active
     if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setIsVisible(true);
       return;
     }
 

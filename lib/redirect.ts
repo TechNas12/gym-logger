@@ -5,7 +5,7 @@
 
 export function getSafeRedirectUrl(
   nextParam: string | null | undefined,
-  fallback = '/login-success'
+  fallback = '/dashboard'
 ): string {
   if (!nextParam || typeof nextParam !== 'string') {
     return fallback;

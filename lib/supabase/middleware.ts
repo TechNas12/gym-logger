@@ -35,8 +35,20 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
+  // Rewire /login-success and /workout directly to /dashboard
+  if (
+    pathname === '/login-success' ||
+    pathname.startsWith('/login-success/') ||
+    pathname === '/workout' ||
+    pathname.startsWith('/workout/')
+  ) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = '/dashboard';
+    return NextResponse.redirect(redirectUrl);
+  }
+
   // Protected route check
-  if (!user && pathname.startsWith('/login-success')) {
+  if (!user && (pathname.startsWith('/dashboard') || pathname.startsWith('/onboarding') || pathname.startsWith('/workout'))) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = '/login';
     redirectUrl.searchParams.set('next', pathname + request.nextUrl.search);
@@ -46,7 +58,7 @@ export async function updateSession(request: NextRequest) {
   // Logged-in users should not access /login or /register
   if (user && (pathname === '/login' || pathname === '/register')) {
     const nextParam = request.nextUrl.searchParams.get('next');
-    const targetUrl = getSafeRedirectUrl(nextParam, '/login-success');
+    const targetUrl = getSafeRedirectUrl(nextParam, '/dashboard');
     const redirectUrl = new URL(targetUrl, request.url);
     return NextResponse.redirect(redirectUrl);
   }
