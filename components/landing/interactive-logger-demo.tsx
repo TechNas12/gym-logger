@@ -438,7 +438,7 @@ export function InteractiveLoggerDemo() {
                       onClick={() => toggleSetComplete(set.id)}
                       className={`w-12 h-12 min-w-[48px] min-h-[48px] rounded-xl inline-flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer active:scale-90 ${
                         set.isCompleted
-                          ? 'bg-accent text-accent-foreground shadow-[0_0_15px_rgba(34,197,94,0.4)] scale-105'
+                          ? 'bg-emerald-600 text-white'
                           : 'bg-surface border border-border hover:border-accent text-text-subtle hover:text-accent'
                       }`}
                       aria-label={set.isCompleted ? 'Mark set incomplete' : 'Mark set complete'}
@@ -551,7 +551,7 @@ export function InteractiveLoggerDemo() {
                           onClick={() => toggleSetComplete(set.id)}
                           className={`w-9 h-9 rounded-xl inline-flex items-center justify-center transition-all duration-200 cursor-pointer ${
                             set.isCompleted
-                              ? 'bg-accent text-accent-foreground shadow-[0_0_15px_rgba(34,197,94,0.4)] scale-105'
+                              ? 'bg-emerald-600 text-white'
                               : 'bg-surface-raised border border-border hover:border-accent/60 text-text-subtle hover:text-accent'
                           }`}
                           aria-label={set.isCompleted ? 'Mark set incomplete' : 'Mark set complete'}

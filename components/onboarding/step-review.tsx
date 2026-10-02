@@ -70,7 +70,7 @@ export function StepReview({
   const getBmiBadgeColor = (category: string) => {
     switch (category) {
       case 'normal':
-        return 'text-accent bg-accent/15 border-accent/40 shadow-[0_0_15px_rgba(34,197,94,0.25)]';
+        return 'text-emerald-400 bg-emerald-500/15 border-emerald-500/40';
       case 'underweight':
         return 'text-sky-400 bg-sky-500/15 border-sky-500/40';
       case 'overweight':
@@ -164,7 +164,7 @@ export function StepReview({
           <div className="relative h-2.5 w-full rounded-full bg-gradient-to-r from-sky-500 via-emerald-500 via-amber-500 to-rose-500 overflow-visible shadow-inner">
             {/* Indicator Marker Dot */}
             <div
-              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-text-primary border-2 border-background shadow-[0_0_10px_rgba(0,0,0,0.8)] transition-all duration-500"
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-text-primary border-2 border-background shadow-md transition-all duration-500"
               style={{ left: `${bmiPercent}%` }}
               aria-label={`BMI position: ${metrics.bmi}`}
             />
@@ -212,7 +212,7 @@ export function StepReview({
         </div>
 
         {/* Daily Target Calories (Highlighted Primary) */}
-        <div className="p-3.5 rounded-2xl bg-accent/10 border border-accent/40 shadow-[0_0_25px_rgba(34,197,94,0.15)] col-span-2 sm:col-span-1">
+        <div className="p-3.5 rounded-2xl bg-surface-raised border border-border col-span-2 sm:col-span-1">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-1.5 text-accent">
               <Target className="w-3.5 h-3.5" />
@@ -373,7 +373,7 @@ export function StepReview({
           type="button"
           onClick={onSubmit}
           disabled={isPending}
-          className="flex-[2] min-h-[48px] inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-accent text-accent-foreground font-bold text-xs sm:text-sm hover:bg-accent-hover active:bg-accent-active active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus-ring shadow-[0_0_25px_rgba(34,197,94,0.35)] hover:shadow-[0_0_35px_rgba(34,197,94,0.5)] cursor-pointer group"
+          className="flex-[2] min-h-[48px] inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus-ring shadow-sm cursor-pointer group"
         >
           {isPending ? (
             <>

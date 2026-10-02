@@ -37,7 +37,7 @@ export function ScrollProgress() {
       aria-hidden="true"
     >
       <div
-        className="h-full bg-gradient-to-r from-accent via-emerald-400 to-lime-300 shadow-[0_0_12px_rgba(34,197,94,0.8)] transition-all duration-75"
+        className="h-full bg-emerald-500 transition-all duration-75"
         style={{ width: `${scrollPercentage}%` }}
       />
     </div>

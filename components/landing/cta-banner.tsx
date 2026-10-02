@@ -8,22 +8,10 @@ import { ScrollReveal } from './scroll-reveal';
 export function CtaBanner() {
   return (
     <section className="py-12 sm:py-20 lg:py-28 relative overflow-hidden">
-      {/* Background glow */}
-      <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-r from-accent/20 to-emerald-500/10 blur-[120px] rounded-full pointer-events-none -z-10"
-        aria-hidden="true"
-      />
-
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal delayMs={0} direction="up">
-          <div className="relative rounded-3xl bg-gradient-to-b from-surface via-surface-raised to-surface border border-border/90 p-6 sm:p-10 lg:p-14 text-center shadow-2xl overflow-hidden">
-          {/* Top subtle highlight line */}
-          <div
-            className="absolute -top-px left-8 sm:left-12 right-8 sm:right-12 h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-80"
-            aria-hidden="true"
-          />
-
-          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-accent/20 border border-accent/40 text-accent mb-5 sm:mb-6 shadow-[0_0_25px_rgba(34,197,94,0.3)]">
+          <div className="relative rounded-3xl bg-surface border border-border p-6 sm:p-10 lg:p-14 text-center shadow-xl overflow-hidden">
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-surface-raised border border-border text-emerald-400 mb-5 sm:mb-6">
             <Dumbbell className="w-6 h-6 sm:w-7 sm:h-7" />
           </div>
 
@@ -39,7 +27,7 @@ export function CtaBanner() {
           <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <Link
               href="/register"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-accent text-accent-foreground font-bold text-sm sm:text-base shadow-[0_0_30px_rgba(34,197,94,0.4)] hover:shadow-[0_0_40px_rgba(34,197,94,0.6)] hover:bg-accent-hover transition-all duration-200 cursor-pointer group"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base transition-colors duration-200 cursor-pointer group"
             >
               <span>Register Now — Free Forever</span>
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />

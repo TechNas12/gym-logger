@@ -13,7 +13,7 @@ import {
   Flame,
 } from 'lucide-react';
 import type { DbRoutine } from '@/lib/types/workout';
-import { getRoutinesAction, startWorkoutAction } from '@/app/workout/actions';
+import { getRoutinesAction } from '@/app/workout/actions';
 
 interface RoutinePickerModalProps {
   isOpen: boolean;
@@ -36,6 +36,7 @@ export function RoutinePickerModal({
     if (!isOpen) return;
 
     let isMounted = true;
+    setIsLoading(true);
 
     getRoutinesAction().then((res) => {
       if (isMounted) {
@@ -51,34 +52,20 @@ export function RoutinePickerModal({
     };
   }, [isOpen]);
 
-  const handleStartRoutine = async (routine: DbRoutine) => {
+  const handleStartRoutine = (routine: DbRoutine) => {
     setStartingRoutineId(routine.id);
-
-    try {
-      const result = await startWorkoutAction({
-        name: routine.name,
-        routineId: routine.id,
-      });
-
-      if (result.success && result.data) {
-        onClose();
-        if (onSelectRoutine) {
-          onSelectRoutine(routine);
-        } else {
-          router.push(`/workout?session=${result.data.sessionId}`);
-        }
-      }
-    } catch (err) {
-      console.error('Failed to start routine:', err);
-    } finally {
-      setStartingRoutineId(null);
+    onClose();
+    if (onSelectRoutine) {
+      onSelectRoutine(routine);
+    } else {
+      router.push(`/workout/active?routine=${routine.id}`);
     }
   };
 
   if (!isOpen) return null;
 
-  const systemTemplates = routines.filter((r) => r.is_system);
-  const customRoutines = routines.filter((r) => !r.is_system);
+  const systemTemplates = routines.filter((r) => r.is_system || r.user_id === null);
+  const customRoutines = routines.filter((r) => !r.is_system && r.user_id !== null);
   const currentList = activeTab === 'templates' ? systemTemplates : customRoutines;
 
   return (
@@ -87,13 +74,7 @@ export function RoutinePickerModal({
       <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
 
       {/* Modal Container */}
-      <div className="relative z-10 w-full sm:max-w-xl max-h-[92vh] sm:max-h-[85vh] flex flex-col bg-surface border-t sm:border border-border/90 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-250">
-        {/* Subtle accent top border */}
-        <div
-          className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-90"
-          aria-hidden="true"
-        />
-
+      <div className="relative z-10 w-full sm:max-w-xl max-h-[92vh] sm:max-h-[85vh] flex flex-col bg-surface border-t sm:border border-border rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-250">
         {/* Mobile handle indicator */}
         <div className="sm:hidden flex justify-center pt-3 pb-1">
           <div className="w-10 h-1 rounded-full bg-border" />
@@ -137,7 +118,7 @@ export function RoutinePickerModal({
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Starter Templates ({systemTemplates.length})</span>
+            <span>Templates ({systemTemplates.length})</span>
           </button>
 
           <button
@@ -165,10 +146,12 @@ export function RoutinePickerModal({
             <div className="flex flex-col items-center justify-center py-12 text-center text-text-subtle">
               <Dumbbell className="w-8 h-8 stroke-[1.5] text-text-subtle mb-2" />
               <p className="text-sm font-semibold text-text-primary">
-                No custom routines yet
+                {activeTab === 'custom' ? 'No custom routines yet' : 'No templates found'}
               </p>
               <p className="text-xs text-text-muted mt-1 max-w-xs">
-                You can create custom routines by grouping your favorite exercises together.
+                {activeTab === 'custom'
+                  ? 'You can create custom routines or save completed workouts as routines.'
+                  : 'Check back soon for curated routines.'}
               </p>
             </div>
           ) : (
@@ -186,7 +169,7 @@ export function RoutinePickerModal({
                       <h3 className="text-sm sm:text-base font-bold text-text-primary group-hover:text-accent transition-colors">
                         {routine.name}
                       </h3>
-                      {routine.is_system ? (
+                      {routine.is_system || routine.user_id === null ? (
                         <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-accent/15 text-accent border border-accent/30 font-semibold shrink-0">
                           Template
                         </span>
@@ -197,9 +180,9 @@ export function RoutinePickerModal({
                       )}
                     </div>
 
-                    {routine.description && (
+                    {routine.notes && (
                       <p className="text-xs text-text-muted leading-relaxed line-clamp-2 mb-3">
-                        {routine.description}
+                        {routine.notes}
                       </p>
                     )}
 
@@ -209,14 +192,17 @@ export function RoutinePickerModal({
                         Included Exercises ({exercises.length}):
                       </span>
                       <div className="flex flex-wrap gap-1.5">
-                        {exercises.map((re) => (
-                          <span
-                            key={re.id}
-                            className="text-[11px] px-2.5 py-0.5 rounded-lg bg-surface border border-border/80 text-text-primary capitalize font-medium"
-                          >
-                            {re.exercise?.name || 'Exercise'} • {re.target_sets}×{re.target_reps}
-                          </span>
-                        ))}
+                        {exercises.map((re) => {
+                          const setCount = re.routine_sets?.length || 3;
+                          return (
+                            <span
+                              key={re.id}
+                              className="text-[11px] px-2.5 py-0.5 rounded-lg bg-surface border border-border/80 text-text-primary capitalize font-medium"
+                            >
+                              {re.exercise?.name || 'Exercise'} • {setCount} sets
+                            </span>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
@@ -225,14 +211,14 @@ export function RoutinePickerModal({
                   <div className="pt-2 border-t border-border/60 flex items-center justify-between">
                     <span className="text-xs text-text-subtle flex items-center gap-1 font-mono">
                       <Flame className="w-3.5 h-3.5 text-accent" />
-                      ~{exercises.length * 10} mins
+                      ~{Math.max(15, exercises.length * 10)} mins
                     </span>
 
                     <button
                       type="button"
                       disabled={isStarting}
                       onClick={() => handleStartRoutine(routine)}
-                      className="min-h-[40px] px-4 rounded-xl bg-accent text-accent-foreground font-bold text-xs hover:bg-accent-hover active:scale-[0.98] transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(34,197,94,0.3)] cursor-pointer disabled:opacity-50"
+                      className="min-h-[40px] px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs active:scale-[0.98] transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                     >
                       {isStarting ? (
                         <>

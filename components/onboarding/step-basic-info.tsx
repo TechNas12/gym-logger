@@ -173,7 +173,7 @@ export function StepBasicInfo({
                 }}
                 className={`flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl border text-center transition-all duration-200 cursor-pointer min-h-[58px] focus-ring ${
                   isSelected
-                    ? 'bg-accent/15 border-accent text-accent shadow-[0_0_20px_rgba(34,197,94,0.2)]'
+                    ? 'bg-accent/15 border-accent text-accent'
                     : 'bg-surface-raised border-border/80 text-text-muted hover:border-border hover:bg-surface-hover hover:text-text-primary'
                 }`}
               >
@@ -456,7 +456,7 @@ export function StepBasicInfo({
       <div className="pt-2">
         <button
           type="submit"
-          className="w-full min-h-[48px] inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-accent text-accent-foreground font-bold text-sm sm:text-base hover:bg-accent-hover active:bg-accent-active active:scale-[0.99] transition-all duration-200 focus-ring shadow-[0_0_25px_rgba(34,197,94,0.35)] hover:shadow-[0_0_35px_rgba(34,197,94,0.5)] cursor-pointer group"
+          className="w-full min-h-[48px] inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base active:scale-[0.99] transition-colors duration-200 focus-ring shadow-sm cursor-pointer group"
         >
           <span>Continue to Activity & Goals</span>
           <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />

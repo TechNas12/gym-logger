@@ -35,12 +35,10 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  // Rewire /login-success and /workout directly to /dashboard
+  // Rewire legacy /login-success directly to /dashboard
   if (
     pathname === '/login-success' ||
-    pathname.startsWith('/login-success/') ||
-    pathname === '/workout' ||
-    pathname.startsWith('/workout/')
+    pathname.startsWith('/login-success/')
   ) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = '/dashboard';
@@ -48,7 +46,13 @@ export async function updateSession(request: NextRequest) {
   }
 
   // Protected route check
-  if (!user && (pathname.startsWith('/dashboard') || pathname.startsWith('/onboarding') || pathname.startsWith('/workout'))) {
+  if (
+    !user &&
+    (pathname.startsWith('/dashboard') ||
+      pathname.startsWith('/onboarding') ||
+      pathname.startsWith('/workout') ||
+      pathname.startsWith('/routines'))
+  ) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = '/login';
     redirectUrl.searchParams.set('next', pathname + request.nextUrl.search);
