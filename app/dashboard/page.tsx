@@ -15,7 +15,7 @@ import { SignOutButton } from '@/components/auth/sign-out-button';
 import { WorkoutHub } from '@/components/dashboard/workout-hub';
 import { AnalyticsKpiWidget } from '@/components/dashboard/analytics-kpi-widget';
 import { WorkoutCard } from '@/components/workout/history/workout-card';
-import { InstallAppButton } from '@/components/pwa/install-button';
+import { InstallAppSection } from '@/components/pwa/install-app-section';
 import { getWorkoutHistoryAction } from '@/app/workout/actions';
 import { getDashboardAnalyticsKpiAction } from '@/app/analytics/actions';
 import {
@@ -104,21 +104,13 @@ export default async function DashboardPage() {
         </Link>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <InstallAppButton />
-          <Link
-            href="/analytics"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-raised border border-border/80 hover:bg-surface-hover text-emerald-400 text-xs font-semibold focus-ring transition-colors cursor-pointer min-h-[36px]"
-          >
-            <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="hidden sm:inline">Analytics</span>
-          </Link>
           <Link
             href="/onboarding?edit=true"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-raised border border-border/80 hover:bg-surface-hover text-text-primary text-xs font-semibold focus-ring transition-colors cursor-pointer min-h-[36px]"
           >
             <Settings className="w-3.5 h-3.5 text-accent" />
-            <span className="hidden sm:inline">Update Stats & Goals</span>
-            <span className="sm:hidden">Update</span>
+            <span className="hidden sm:inline">Update Stats &amp; Goals</span>
+            <span className="sm:hidden">Stats</span>
           </Link>
           <SignOutButton />
         </div>
@@ -200,8 +192,11 @@ export default async function DashboardPage() {
         {/* Workout Tracker Entry Section (Start Workout & Start Routine) */}
         <WorkoutHub userName={firstName} />
 
-        {/* Training Analytics KPI Placement (Glimpse of Analytics) */}
+        {/* Training Analytics KPI Section (Random Useful KPI on Left, CTA on Right) */}
         <AnalyticsKpiWidget kpi={analyticsKpi} />
+
+        {/* Dedicated PWA App Installation Section (Hidden if already installed) */}
+        <InstallAppSection />
 
         {/* Recent Workouts Activity (if any) */}
         {recentWorkouts.length > 0 && (

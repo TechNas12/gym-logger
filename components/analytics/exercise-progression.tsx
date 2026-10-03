@@ -480,7 +480,7 @@ export function ExerciseProgression({ exercises }: ExerciseProgressionProps) {
                       </span>
                     )}
                   </div>
-                  <div className="text-[11px] text-text-subtle">
+                  <div suppressHydrationWarning className="text-[11px] text-text-subtle">
                     {new Date(session.date).toLocaleDateString('en-US', {
                       month: 'short',
                       day: 'numeric',

@@ -20,6 +20,7 @@ import {
 import type { WorkoutDetail, DbExercise } from '@/lib/types/workout';
 import { deleteWorkoutAction, createRoutineFromWorkoutAction } from '@/app/workout/actions';
 import { ExerciseDetailModal } from '@/components/workout/exercise-detail-modal';
+import { formatWorkoutDetailDate } from '@/lib/date-format';
 
 interface WorkoutDetailViewProps {
   workout: WorkoutDetail;
@@ -40,12 +41,7 @@ export function WorkoutDetailView({ workout }: WorkoutDetailViewProps) {
     return `${mins}m ${s}s`;
   };
 
-  const formattedDate = new Date(workout.started_at).toLocaleDateString(undefined, {
-    weekday: 'long',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  const formattedDate = formatWorkoutDetailDate(workout.started_at);
 
   const handleDelete = async () => {
     if (!confirm(`Are you sure you want to delete "${workout.name}"?`)) return;
@@ -151,7 +147,7 @@ export function WorkoutDetailView({ workout }: WorkoutDetailViewProps) {
       <div className="p-6 sm:p-7 rounded-3xl bg-surface/90 border border-border/80 shadow-xl space-y-5">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="text-xs font-mono text-text-subtle flex items-center gap-1">
+            <span suppressHydrationWarning className="text-xs font-mono text-text-subtle flex items-center gap-1">
               <Calendar className="w-3.5 h-3.5 text-accent" />
               {formattedDate}
             </span>

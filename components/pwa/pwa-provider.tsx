@@ -25,6 +25,7 @@ interface BeforeInstallPromptEvent extends Event {
 interface PwaContextType {
   isInstallable: boolean;
   isStandalone: boolean;
+  isInstalled: boolean;
   isIOS: boolean;
   isOnline: boolean;
   promptInstall: () => Promise<boolean>;
@@ -34,6 +35,7 @@ interface PwaContextType {
 const PwaContext = createContext<PwaContextType>({
   isInstallable: false,
   isStandalone: false,
+  isInstalled: false,
   isIOS: false,
   isOnline: true,
   promptInstall: async () => false,
@@ -50,6 +52,7 @@ const DISMISS_DURATION_DAYS = 7;
 export function PwaProvider({ children }: { children: React.ReactNode }) {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isStandalone, setIsStandalone] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [showBanner, setShowBanner] = useState(false);
@@ -110,18 +113,41 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
         standaloneQuery.matches ||
         (window.navigator as unknown as { standalone?: boolean }).standalone === true;
       setIsStandalone(isStandaloneMode);
+      if (isStandaloneMode) {
+        setIsInstalled(true);
+      }
       return isStandaloneMode;
     };
 
     const isAppStandalone = checkStandalone();
+    const installedStorage = localStorage.getItem('gymlogger_pwa_installed') === 'true';
+    if (installedStorage) {
+      setIsInstalled(true);
+    }
+
     standaloneQuery.addEventListener?.('change', checkStandalone);
 
     const ua = window.navigator.userAgent;
     const isAppleDevice = /iPad|iPhone|iPod/.test(ua) && !(window as unknown as { MSStream?: unknown }).MSStream;
     setIsIOS(isAppleDevice);
 
-    // If already running standalone, do not show banners
-    if (isAppStandalone) return;
+    // Listen for browser install completion
+    const handleAppInstalled = () => {
+      setIsStandalone(true);
+      setIsInstalled(true);
+      setDeferredPrompt(null);
+      setShowBanner(false);
+      try {
+        localStorage.setItem('gymlogger_pwa_installed', 'true');
+      } catch {
+        // Storage fallback
+      }
+    };
+
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    // If already running standalone or installed, do not show banners
+    if (isAppStandalone || installedStorage) return;
 
     // Check if user recently dismissed the banner
     const dismissedAt = localStorage.getItem(DISMISS_STORAGE_KEY);
@@ -148,11 +174,13 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
       return () => {
         clearTimeout(timer);
         window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+        window.removeEventListener('appinstalled', handleAppInstalled);
       };
     }
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);
 
@@ -163,6 +191,12 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
       if (choice.outcome === 'accepted') {
         setDeferredPrompt(null);
         setShowBanner(false);
+        setIsInstalled(true);
+        try {
+          localStorage.setItem('gymlogger_pwa_installed', 'true');
+        } catch {
+          // Storage fallback
+        }
         return true;
       }
       return false;
@@ -194,6 +228,7 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
       value={{
         isInstallable: !!deferredPrompt || isIOS,
         isStandalone,
+        isInstalled: isStandalone || isInstalled,
         isIOS,
         isOnline,
         promptInstall,
@@ -206,7 +241,7 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
       {!isOnline && (
         <div className="fixed top-0 left-0 right-0 z-50 bg-amber-500 text-amber-950 px-4 py-2 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-md animate-in slide-in-from-top duration-300">
           <WifiOff className="w-4 h-4 shrink-0 text-amber-950" />
-          <span>You are offline. Workouts will be stored locally on your device.</span>
+          <span>You are offline. Please reconnect to the internet to save and sync your workouts.</span>
         </div>
       )}
 
@@ -237,7 +272,7 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
                 </span>
               </div>
               <p className="text-xs text-text-muted mt-0.5 line-clamp-2 leading-relaxed">
-                Save GymLogger to your home screen for instant fullscreen logging and offline tracking in the gym.
+                Add GymLogger to your home screen for instant 1-tap access and a full-screen app experience.
               </p>
 
               <div className="flex items-center gap-2 mt-3">

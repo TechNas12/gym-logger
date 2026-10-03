@@ -125,7 +125,7 @@ export function PrTrophyRoom({ records }: PrTrophyRoomProps) {
 
               {/* Date & Workout Footer */}
               <div className="mt-3.5 pt-2.5 border-t border-border/60 flex items-center justify-between text-[11px] text-text-subtle">
-                <span className="flex items-center gap-1 font-mono">
+                <span suppressHydrationWarning className="flex items-center gap-1 font-mono">
                   <Calendar className="w-3 h-3 text-text-subtle shrink-0" />
                   {new Date(record.date).toLocaleDateString('en-US', {
                     month: 'short',

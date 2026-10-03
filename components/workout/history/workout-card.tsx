@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import type { WorkoutSummary } from '@/lib/types/workout';
 import { deleteWorkoutAction } from '@/app/workout/actions';
+import { formatWorkoutCardDate } from '@/lib/date-format';
 
 interface WorkoutCardProps {
   workout: WorkoutSummary;
@@ -34,11 +35,7 @@ export function WorkoutCard({ workout }: WorkoutCardProps) {
     return `${mins}m`;
   };
 
-  const formattedDate = new Date(workout.started_at).toLocaleDateString(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-  });
+  const formattedDate = formatWorkoutCardDate(workout.started_at);
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -67,7 +64,7 @@ export function WorkoutCard({ workout }: WorkoutCardProps) {
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[11px] font-mono text-text-subtle flex items-center gap-1">
+              <span suppressHydrationWarning className="text-[11px] font-mono text-text-subtle flex items-center gap-1">
                 <Calendar className="w-3 h-3 text-accent" />
                 {formattedDate}
               </span>
