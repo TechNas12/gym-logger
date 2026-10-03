@@ -62,7 +62,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
     <main className="min-h-screen bg-background selection:bg-accent/30 selection:text-text-primary flex flex-col justify-between p-4 sm:p-6 lg:p-10 relative overflow-x-hidden">
       {/* Top Navbar */}
       <header className="w-full max-w-2xl mx-auto flex items-center justify-between pb-4 sm:pb-6 relative z-10">
-        <Link href="/" className="flex items-center gap-2.5 group cursor-pointer">
+        <Link href="/dashboard" className="flex items-center gap-2.5 group cursor-pointer">
           <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-surface-raised border border-border text-accent group-hover:border-accent/60 transition-colors">
             <Dumbbell className="w-4 h-4 text-accent" />
           </div>

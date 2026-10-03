@@ -51,7 +51,8 @@ export async function updateSession(request: NextRequest) {
     (pathname.startsWith('/dashboard') ||
       pathname.startsWith('/onboarding') ||
       pathname.startsWith('/workout') ||
-      pathname.startsWith('/routines'))
+      pathname.startsWith('/routines') ||
+      pathname.startsWith('/analytics'))
   ) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = '/login';
@@ -59,8 +60,8 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Logged-in users should not access /login or /register
-  if (user && (pathname === '/login' || pathname === '/register')) {
+  // Logged-in users should not access the landing page (/), /login, or /register; redirect to /dashboard
+  if (user && (pathname === '/' || pathname === '/login' || pathname === '/register')) {
     const nextParam = request.nextUrl.searchParams.get('next');
     const targetUrl = getSafeRedirectUrl(nextParam, '/dashboard');
     const redirectUrl = new URL(targetUrl, request.url);

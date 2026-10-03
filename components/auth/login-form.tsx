@@ -22,44 +22,10 @@ export function LoginForm() {
   const [errorDetails, setErrorDetails] = useState<AuthErrorDetails | null>(null);
   const [isPending, setIsPending] = useState(false);
 
-  const [isResending, setIsResending] = useState(false);
-  const [resendSuccess, setResendSuccess] = useState(false);
-
-  const handleResendConfirmation = async () => {
-    if (!email) return;
-    setIsResending(true);
-    setResendSuccess(false);
-
-    try {
-      const supabase = createClient();
-      const { error } = await supabase.auth.resend({
-        type: 'signup',
-        email: email.trim().toLowerCase(),
-        options: {
-          emailRedirectTo:
-            typeof window !== 'undefined'
-              ? `${window.location.origin}/auth/callback?next=/dashboard`
-              : undefined,
-        },
-      });
-
-      if (error) {
-        setErrorDetails(mapAuthError(error));
-      } else {
-        setResendSuccess(true);
-      }
-    } catch (err) {
-      setErrorDetails(mapAuthError(err));
-    } finally {
-      setIsResending(false);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFieldErrors({});
     setErrorDetails(null);
-    setResendSuccess(false);
 
     // 1. Client-side Zod validation
     const parsed = loginSchema.safeParse({ email, password });
@@ -111,13 +77,7 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {/* Form-level Error Banner */}
-      <FormErrorBanner
-        error={errorDetails?.message || null}
-        isEmailNotConfirmed={errorDetails?.isEmailNotConfirmed}
-        onResendConfirmation={handleResendConfirmation}
-        isResending={isResending}
-        resendSuccess={resendSuccess}
-      />
+      <FormErrorBanner error={errorDetails?.message || null} />
 
       {/* Email Input */}
       <div>

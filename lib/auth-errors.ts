@@ -67,7 +67,7 @@ export function mapAuthError(error: unknown): AuthErrorDetails {
   ) {
     return {
       message:
-        'Your email address has not been confirmed yet. Please check your inbox or request a new confirmation link below.',
+        'Email confirmation is not required. If you see this, please toggle off "Confirm email" in Supabase Dashboard (Authentication > Providers > Email).',
       isEmailNotConfirmed: true,
     };
   }
