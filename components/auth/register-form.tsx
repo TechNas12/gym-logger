@@ -7,8 +7,6 @@ import {
   Eye,
   EyeOff,
   Loader2,
-  MailCheck,
-  RefreshCw,
   Mail,
   Lock,
   User,
@@ -43,46 +41,10 @@ export function RegisterForm() {
   const [errorDetails, setErrorDetails] = useState<AuthErrorDetails | null>(null);
   const [isPending, setIsPending] = useState(false);
 
-  // Email confirmation state (if project requires email verification)
-  const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
-  const [isResending, setIsResending] = useState(false);
-  const [resendSuccess, setResendSuccess] = useState(false);
-
-  const handleResendConfirmation = async () => {
-    if (!email) return;
-    setIsResending(true);
-    setResendSuccess(false);
-
-    try {
-      const supabase = createClient();
-      const { error } = await supabase.auth.resend({
-        type: 'signup',
-        email: email.trim().toLowerCase(),
-        options: {
-          emailRedirectTo:
-            typeof window !== 'undefined'
-              ? `${window.location.origin}/auth/callback?next=/dashboard`
-              : undefined,
-        },
-      });
-
-      if (error) {
-        setErrorDetails(mapAuthError(error));
-      } else {
-        setResendSuccess(true);
-      }
-    } catch (err) {
-      setErrorDetails(mapAuthError(err));
-    } finally {
-      setIsResending(false);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFieldErrors({});
     setErrorDetails(null);
-    setResendSuccess(false);
 
     // 1. Zod client validation
     const parsed = registerSchema.safeParse({
@@ -122,14 +84,11 @@ export function RegisterForm() {
     try {
       const supabase = createClient();
 
+      // Sign up the new user
       const { data, error } = await supabase.auth.signUp({
         email: normalizedEmail,
         password,
         options: {
-          emailRedirectTo:
-            typeof window !== 'undefined'
-              ? `${window.location.origin}/auth/callback?next=/dashboard`
-              : undefined,
           data: {
             first_name: parsed.data.firstName,
             last_name: parsed.data.lastName,
@@ -146,9 +105,10 @@ export function RegisterForm() {
         return;
       }
 
-      // Check if email confirmation is required:
-      if (data.user && !data.session) {
-        // If identities is present and empty, user already registered
+      let session = data.session;
+
+      // If signUp did not automatically return a session, sign in directly with password
+      if (!session && data.user) {
         if (data.user.identities && data.user.identities.length === 0) {
           setErrorDetails({
             message:
@@ -160,14 +120,23 @@ export function RegisterForm() {
           return;
         }
 
-        // Needs email verification
-        setNeedsEmailConfirmation(true);
-        setIsPending(false);
-        return;
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email: normalizedEmail,
+          password,
+        });
+
+        if (signInError) {
+          setErrorDetails(mapAuthError(signInError));
+          setPassword('');
+          setConfirmPassword('');
+          setIsPending(false);
+          return;
+        }
+
+        session = signInData.session;
       }
 
-      // If email confirmation is disabled on the project, Supabase returns session immediately
-      if (data.session) {
+      if (session) {
         router.push('/dashboard');
         router.refresh();
       }
@@ -179,83 +148,10 @@ export function RegisterForm() {
     }
   };
 
-  // "Check your inbox" screen
-  if (needsEmailConfirmation) {
-    return (
-      <div className="text-center py-4 space-y-5 animate-in fade-in zoom-in-95 duration-200">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-surface-raised border border-border text-emerald-400 mx-auto">
-          <MailCheck className="w-8 h-8" aria-hidden="true" />
-        </div>
-
-        <div>
-          <h2 className="text-2xl font-extrabold text-text-primary">
-            Welcome, {firstName}!
-          </h2>
-          <p className="mt-2 text-xs sm:text-sm text-text-muted leading-relaxed">
-            We sent a secure confirmation link to:
-            <br />
-            <strong className="text-text-primary font-bold text-sm block mt-1 font-mono">
-              {email}
-            </strong>
-          </p>
-        </div>
-
-        <div className="p-4 rounded-xl bg-surface-raised border border-border/80 text-xs text-text-subtle text-left space-y-1.5">
-          <p className="font-semibold text-text-primary">Next Steps:</p>
-          <p>1. Open your email inbox and click the verification button.</p>
-          <p>2. You will be redirected to the authentication confirmation page.</p>
-          <p className="text-[11px] pt-1 text-text-subtle/80">
-            Check your spam folder if it doesn&apos;t arrive within 60 seconds.
-          </p>
-        </div>
-
-        <div className="pt-2 flex flex-col gap-3">
-          {resendSuccess ? (
-            <div className="p-3 rounded-xl bg-success-bg border border-success-border text-success text-xs font-semibold">
-              ✓ Verification link resent! Check your inbox.
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={handleResendConfirmation}
-              disabled={isResending}
-              className="min-h-[44px] inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-surface-raised border border-border hover:bg-surface-hover text-text-primary text-xs font-semibold focus-ring cursor-pointer transition-colors active:scale-[0.99]"
-            >
-              {isResending ? (
-                <>
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
-                  <span>Resending link...</span>
-                </>
-              ) : (
-                <>
-                  <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />
-                  <span>Resend confirmation link</span>
-                </>
-              )}
-            </button>
-          )}
-
-          <Link
-            href="/login"
-            className="min-h-[40px] flex items-center justify-center text-xs font-semibold text-accent hover:text-accent-hover underline-offset-4 hover:underline focus-ring rounded py-1"
-          >
-            ← Back to sign in
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {/* Form-level Error Banner */}
-      <FormErrorBanner
-        error={errorDetails?.message || null}
-        isEmailNotConfirmed={errorDetails?.isEmailNotConfirmed}
-        onResendConfirmation={handleResendConfirmation}
-        isResending={isResending}
-        resendSuccess={resendSuccess}
-      />
+      <FormErrorBanner error={errorDetails?.message || null} />
 
       {/* First Name & Last Name (Split into 2 parts) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">

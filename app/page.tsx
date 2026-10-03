@@ -1,5 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
 import { Navbar } from '@/components/landing/navbar';
 import { ScrollProgress } from '@/components/landing/scroll-progress';
 import { Hero } from '@/components/landing/hero';
@@ -18,7 +20,16 @@ export const metadata: Metadata = {
     'The 100% free, open-source workout tracker for serious lifters. Track progressive overload, calculate 1RM, manage rest intervals, and own your fitness data without subscription fees.',
 };
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    redirect('/dashboard');
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col selection:bg-accent selection:text-accent-foreground">
       {/* Real-time Reading/Scroll Progress Bar */}
